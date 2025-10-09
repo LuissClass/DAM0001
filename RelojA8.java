@@ -1,3 +1,12 @@
+/* 
+Crea una clase Hora que tenga como atributos la hora, el minuto y el segundo.
+Añade un constructor que reciba como parámetros los 3 atributos.
+Crea un método mostrar que imprima en pantalla la hora con el formato del siguiente ejemplo 15:32:2
+Añade un método incrementarSegundo que añada un segundo al objeto hora (el recibido en this) teniendo en cuenta que los minutos tienen 60 segundos y las horas tienen 60 minutos. Después de las 23:59:29 la hora será la 0:0:0
+Realiza una clase Reloj que tenga como atributo un objeto de tipo hora.
+Codifica, en la clase Reloj, un método main que cree una hora, muestre en pantalla la misma, invoque al método incrementarSegundo y después vuelva a mostrar la hora. Haz la prueba con diferentes valores para comprobar que el método incrementarSegundo funciona adecuadamente.
+Utiliza el operador ternario ( condición? valortrue:valorfalse )
+No utilices la case Date ni ninguna similar. */
 
 public class RelojA8 {
     public static void main(String[] args) {
@@ -51,5 +60,6 @@ class Hora {
         pasoMin = false;
     }
 }
+
 
 
