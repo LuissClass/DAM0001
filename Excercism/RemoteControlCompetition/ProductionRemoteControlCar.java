@@ -1,8 +1,9 @@
 package Excercism.RemoteControlCompetition;
 
-class ProductionRemoteControlCar implements RemoteControlCar{
-    private final static int SPEED = 20;
+class ProductionRemoteControlCar implements RemoteControlCar, Comparable<ProductionRemoteControlCar>{
+    private final static int SPEED = 10;
     private int distance = 0;
+    private int numberOfVictories = 0;
 
     public void drive() {
         distance+=SPEED;
@@ -13,10 +14,15 @@ class ProductionRemoteControlCar implements RemoteControlCar{
     }
 
     public int getNumberOfVictories() {
-        throw new UnsupportedOperationException("Please implement the ProductionRemoteControlCar.getNumberOfVictories() method");
+        return numberOfVictories;
     }
 
     public void setNumberOfVictories(int numberOfVictories) {
-        throw new UnsupportedOperationException("Please implement the ProductionRemoteControlCar.setNumberOfVictories() method");
+        this.numberOfVictories = numberOfVictories;
+    }
+
+    @Override
+    public int compareTo(ProductionRemoteControlCar o) {
+        return numberOfVictories - o.numberOfVictories;
     }
 }
