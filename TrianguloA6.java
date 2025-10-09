@@ -1,7 +1,7 @@
 public class TrianguloA6 {
     private PuntoA5 vert1;
     private PuntoA5 vert2;
-    private PuntoA5 vert3 = new PuntoA5(0,0);
+    private PuntoA5 vert3; 
     double lado1;
     double lado2;
     double lado3;
@@ -10,6 +10,7 @@ public class TrianguloA6 {
     TrianguloA6 (PuntoA5 vert1, PuntoA5 vert2) {
         this.vert1 = vert1;
         this.vert2 = vert2;
+        vert3 = new PuntoA5(0,0);
     }
 
     TrianguloA6 (PuntoA5 vert1, PuntoA5 vert2, PuntoA5 vert3) {
@@ -91,3 +92,4 @@ public class TrianguloA6 {
 }
 
 // Para verificar: https://es.planetcalc.com/9423/
+
