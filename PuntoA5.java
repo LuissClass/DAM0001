@@ -31,10 +31,7 @@ public class PuntoA5 {
     }
 
     public static PuntoA5 puntoCercanoAlOrigen(PuntoA5 pt1, PuntoA5 pt2) {
-        if (discantiaEntrePuntos(pt1, ptOrigen) > discantiaEntrePuntos(pt2, ptOrigen)) {
-            return pt2;
-        }
-        return pt1;
+        return (discantiaEntrePuntos(pt1, ptOrigen) > discantiaEntrePuntos(pt2, ptOrigen)) ? pt2 : pt1;
     }
 
     public void mostrarPunto() {
