@@ -23,8 +23,6 @@ public class TrianguloA6 {
         lado2 = PuntoA5.discantiaEntrePuntos(vert2,vert3);
         lado3 = PuntoA5.discantiaEntrePuntos(vert3,vert1);
 
-        hayPerimetro = true;
-
         return lado1+lado2+lado3;
     }
 
@@ -35,13 +33,8 @@ public class TrianguloA6 {
     }
 
     public boolean esEquilatero() {
-        boolean respuesta = false;
-        if (hayPerimetro) {
-            respuesta = lado1 == lado2 || lado2 == lado3 || lado3 == lado1? true: false;
-        } else {
-            System.out.println("No se puede saber si el triangulo es equilatero si no se ha calulado su perimetro");
-        }
-        return respuesta;
+        this.calcularPerimetro(); // Para evitar errores
+        return lado1 == lado2 || lado2 == lado3 || lado3 == lado1? true: false;
     }
 
     public void mostrarDatos() {
