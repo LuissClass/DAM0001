@@ -1,7 +1,7 @@
 public class TrianguloA6 {
     private PuntoA5 vert1;
     private PuntoA5 vert2;
-    private PuntoA5 vert3; 
+    private PuntoA5 vert3;
     double lado1;
     double lado2;
     double lado3;
@@ -35,7 +35,7 @@ public class TrianguloA6 {
 
     public boolean esEquilatero() {
         this.calcularPerimetro(); // Para evitar errores
-        return lado1 == lado2 || lado2 == lado3 || lado3 == lado1? true: false;
+        return lado1 == lado2 && lado2 == lado3;
     }
 
     public void mostrarDatos() {
@@ -82,7 +82,7 @@ public class TrianguloA6 {
         System.out.println();
         System.out.println("Triangulo 1 es equilatero: " + tri1.esEquilatero());
         System.out.println();
-        System.out.println("Triangulo 2 es equilatero: " + tri2.esEquilatero());
+        System.out.println("Triangulo 2 es  equilatero: " + tri2.esEquilatero());
         System.out.println();
 
         System.out.println("Creando triangulo con Punto en (0,0)");
@@ -92,4 +92,3 @@ public class TrianguloA6 {
 }
 
 // Para verificar: https://es.planetcalc.com/9423/
-
