@@ -1,12 +1,14 @@
 package Excercism.RemoteControlCompetition;
 
-public class ExperimentalRemoteControlCar {
+public class ExperimentalRemoteControlCar implements RemoteControlCar{
+    private final static int SPEED = 20;
+    private int distance = 0;
 
     public void drive() {
-        throw new UnsupportedOperationException("Please implement the Excercism.RemoteControlCompetition.ExperimentalRemoteControlCar.drive() method");
+        distance+=SPEED;
     }
 
     public int getDistanceTravelled() {
-        throw new UnsupportedOperationException("Please implement the Excercism.RemoteControlCompetition.ExperimentalRemoteControlCar.getDistanceTravelled() method");
+        return distance;
     }
 }
