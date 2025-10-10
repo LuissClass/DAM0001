@@ -5,53 +5,35 @@
     clean("a 73s7") => "a_test"
     clean("a$#.b") => "ab" */
 
+import java.util.Map;
+
 class SqueakyClean {
     static String clean(String identifier) {
-        char[] asArray = identifier.toCharArray();
+        char[] idAsArray = identifier.toCharArray();
         StringBuilder builder = new StringBuilder();
         boolean isKebabCase = false;
         String strChar;
-        char[] vocals = {'a', 'e', 'o', 'l', 't'};
-        int[] modifiers = {4, 3, 0, 1, 7};
-        int i = 0;
-        boolean isNumber = false;
-        String strM;
+        Map<Character, Character> modifiers = Map.of('4', 'a', '3', 'e', '0', 'o', '1', 'l', '7', 't');
 
-        for (char ch : asArray) {
-            for (int m : modifiers) {
-                strM = m + "";
-                if (ch == strM.charAt(0)) {
-                    isNumber = true;
-                    break;
-                } else {
-                    isNumber = false;
-                }
-            }
+        for (char ch : idAsArray) {
+            if (ch == ' ') {
+                builder.append('_');
 
-            if (Character.isLetter(ch) || ch == ' ' || ch == '-' || isNumber) { // Task 4)
-                if (ch == ' ') { // Task 1)
-                    builder.append('_');
-                } else if (ch == '-') {
-                    isKebabCase = true;
-                } else if (isKebabCase) {     // Task 2)
-                    strChar = ch + "";
-                    builder.append(strChar.toUpperCase());
-                    isKebabCase = false;
-                } else if (isNumber) {
-                    for (int modifier : modifiers) { // Task 3)
-                        strM = modifier + "";
-                        if (ch == strM.charAt(0)) {
-                            builder.append(vocals[i]);
-                            break;
-                        } else {
-                            ++i;
-                        }
-                    }
-                    i = 0;
-                    isNumber = false;
-                } else {
-                    builder.append(ch);
+                // Si hay un guion, el siguiente char se pondra en mayuscula
+            } else if (ch == '-') {
+                isKebabCase = true;
+            } else if (isKebabCase) {
+                strChar = ch + "";
+                builder.append(strChar.toUpperCase());
+                isKebabCase = false;
+
+                // Cambia los numeros acorde al mapeo de modifiers
+            } else if (Character.isDigit(ch)) {
+                if (modifiers.containsKey(ch)) {
+                    builder.append(modifiers.get(ch));
                 }
+            } else if (Character.isLetter(ch)) {
+                builder.append(ch);
             }
         }
         return builder.toString();
