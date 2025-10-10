@@ -19,7 +19,6 @@ public class PartidoFutbolA7 {
         byte golesVisitante = (byte) (Math.random()*MAX_GOLES);
 
         local.setGolesMarcados(golesLocal);
-        System.out.println(golesLocal);
         local.setGolesRecibidos(golesVisitante);
         visitante.setGolesMarcados(golesVisitante);
         visitante.setGolesRecibidos(golesLocal);
