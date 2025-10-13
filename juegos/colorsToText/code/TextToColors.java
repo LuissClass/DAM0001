@@ -2,7 +2,7 @@ package juegos.colorsToText.code;
 import static juegos.colorsToText.code.Memoria.*;
 
 public class TextToColors {
-    static TextToColors ctt = new TextToColors();
+    static TextToColors ttc = new TextToColors();
 
 
 
@@ -46,8 +46,7 @@ public class TextToColors {
 
     // ESTO DEVUELVE UN STRING BINARIO SIN EL CERO DE 2^5, QUE EN DECIMAL (Y SIN QUE FALTE ESE CERO) ES EL NUMERO ORIGINAL RESTANDOLE 32. Y en hexa es el numero pero -2 al digito izquierdo.
     private String decToBin(String textDec) {
-        int numInt;
-        String numStr = "";
+        numStr = "";
         textBin = "";
 
 
@@ -155,7 +154,7 @@ public class TextToColors {
     }
 
     public static void textToColor(String Text) {
-        ctt.hexToColor(ctt.binToHex(ctt.decToBin(ctt.asciiToDec(Text))));
+        ttc.hexToColor(ttc.binToHex(ttc.decToBin(ttc.asciiToDec(Text))));
     }
 
     public static String getColors() {
