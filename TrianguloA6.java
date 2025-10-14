@@ -20,9 +20,9 @@ public class TrianguloA6 {
     }
 
     public double calcularPerimetro() {
-        lado1 = PuntoA5.discantiaEntrePuntos(vert1,vert2);
-        lado2 = PuntoA5.discantiaEntrePuntos(vert2,vert3);
-        lado3 = PuntoA5.discantiaEntrePuntos(vert3,vert1);
+        lado1 = PuntoA5.distanciaEntrePuntos(vert1,vert2);
+        lado2 = PuntoA5.distanciaEntrePuntos(vert2,vert3);
+        lado3 = PuntoA5.distanciaEntrePuntos(vert3,vert1);
 
         return lado1+lado2+lado3;
     }
@@ -92,3 +92,4 @@ public class TrianguloA6 {
 }
 
 // Para verificar: https://es.planetcalc.com/9423/
+
