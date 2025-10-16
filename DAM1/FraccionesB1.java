@@ -63,12 +63,16 @@ public class FraccionesB1 {
     }
 
     FraccionesB1 esMayorQue(FraccionesB1 fraccion) {
-        int numAux = num;
-        den *= fraccion.den;
-        num *= fraccion.num;
-        fraccion.num *= numAux;
+        int num1 = num;
+        int num2 = fraccion.num;
 
-        return num > fraccion.num? this:fraccion;
+        num1 *= fraccion.den;
+        num2 *= den;
+
+        if (num1 > num2) {
+            return this;
+        }
+        return fraccion;
     }
 
     public static void main(String[] args) throws IOException {
@@ -104,7 +108,6 @@ public class FraccionesB1 {
         FraccionesB1 frest = new FraccionesB1();
         frest.restar2num(f1,f2);
         frest.mostrar();
-
 
         System.out.println("\nf1: ");
         f1.mostrar();
