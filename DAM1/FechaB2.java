@@ -33,11 +33,12 @@ public class FechaB2 {
                 break;
             case 2:
                 if (esBisiesto()) {
+                    month = day == 29 ? month + 1 : month;
                     day = day == 29 ? 0 : day;
                 } else {
+                    month = day == 28 ? month + 1 : month;
                     day = day == 28 ? 0 : day;
                 }
-                month += 1;
                 break;
             default:
                 month = day == 31 ? month + 1 : month;
@@ -64,3 +65,4 @@ public class FechaB2 {
         fecha1.mostrarConFormato();
     }
 }
+
