@@ -71,6 +71,9 @@ public class FraccionesB1 {
 
         if (num1 > num2) {
             return this;
+        } else if (num1 == num2) {
+            System.out.println("Son iguales");
+            return new FraccionesB1(0,0);
         }
         return fraccion;
     }
