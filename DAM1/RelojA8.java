@@ -8,6 +8,7 @@ Codifica, en la clase Reloj, un método main que cree una hora, muestre en panta
 Utiliza el operador ternario ( condición? valortrue:valorfalse )
 No utilices la case Date ni ninguna similar. */
 
+
 public class RelojA8 {
     public static void main(String[] args) {
         Hora hora1 = new Hora(23, 59, 57);
@@ -43,23 +44,23 @@ class Hora {
     }
 
     void incrementarSegundo() {
-        boolean pasoSeg = false;
-        boolean pasoMin = false;
+        boolean pasoSeg;
+        boolean pasoMin;
 
-        pasoSeg = segundos == 59? true : false;
+        pasoSeg = segundos == 59;
         segundos = pasoSeg? 0 : segundos+1;
 
         minutos = pasoSeg? minutos+1 : minutos;
-        pasoMin = minutos == 60? true : false;
+        pasoMin = minutos == 60;
         minutos = pasoSeg && pasoMin? 0 : minutos;
 
         horas = pasoMin? horas+1 : horas;
         horas = horas == 24? 0 : horas;
-
-        pasoSeg = false;
-        pasoMin = false;
     }
 }
+
+
+
 
 
 
