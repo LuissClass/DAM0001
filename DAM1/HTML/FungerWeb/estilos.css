@@ -1,0 +1,45 @@
+        body {
+            background-color: #000000;
+            font-family: "VT323", "Courier New", Courier, monospace;
+            color: #EEEEEE;
+        }
+
+        a {
+            color: yellow;
+            width: 100%;
+            text-decoration: none;
+        }
+
+        h1 {
+            text-align: center;
+            color: #FF0000;
+        }
+
+        h2 {
+            color: #00DD00;
+        }
+
+        h3 {
+            color: yellow;
+        }
+
+        p {
+            margin-right: 40%;
+            font-size: 170%;
+        }
+
+        .newGodImg {
+            text-align: center;
+            margin-right: 50%;
+        }
+
+        #greenWords {
+            color: #00DD00;
+            background-color: none;
+
+        }
+
+        #yellowWords {
+            color: yellow;
+            background-color: blue;
+        }
