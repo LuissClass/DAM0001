@@ -3,7 +3,7 @@
 sudo apt update
 sudo apt upgrade -y
 
-read -p "Introduce nombre de usuario sin mayusculas: " usuario
+read -p "Introduce el nombre para el nuevo usuario (sin mayusculas): " usuario
 
 #Asignar usuario manualmente
 sudo adduser --gecos "" --disabled-password "$usuario"
