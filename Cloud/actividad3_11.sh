@@ -19,7 +19,7 @@ sudo usermod -aG sudo $usuario
 echo $usuario
 groups "$usuario"
 
-read -p "Enter para continuar"
+read -p "¡Importante! La password del usuario es su nombre + 123 (usuario123). Enter para continuar con la instalación de Webmin o Ctrl+C para salir."
 
 #Descargar e instalar Webmin con el archivo .deb
 sudo wget https://www.webmin.com/download/deb/webmin-current.deb
