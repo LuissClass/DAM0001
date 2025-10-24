@@ -16,11 +16,13 @@
         }
 
         h2 {
-            color: #00DD00;
+            color: #bcae12;
+            font-size: 200%;
         }
 
         h3 {
             color: yellow;
+            font-size: 200%;
         }
 
         p {
@@ -43,3 +45,9 @@
             color: yellow;
             background-color: blue;
         }
+
+        #textoTabulado {
+            margin-left: 3%;
+        }
+
+        /* .header {} */
