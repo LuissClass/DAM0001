@@ -1,9 +1,13 @@
-/**
+package DAM1; /**
 *   @author Jose Manuel Perez Lobato
 *   @version 1.0
 */
-import java.io.*;
-class Teclado{
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+class Teclado {
 	 /**
 	  * Lee un caracter y elimina del buffer de teclado todos los que est�n en esa l�nea, incluido 
 	  * el final de la l�nea.
