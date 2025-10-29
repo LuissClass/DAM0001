@@ -1,5 +1,6 @@
-#000033#D70972#C25BA5
+# Mejoras de version 1.1v
+- Se ha agregado un par de excepciones.
 
-ColorSwatches.java -> Esta escrito completamente por ChatGPT, con alguna mod. mia.
+# Notas
+- ColorSwatches.java -> Esta escrito completamente por ChatGPT, con alguna mod. mia.
 
-# Eo

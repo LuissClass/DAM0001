@@ -23,7 +23,7 @@ public class ColorsToText {
             }
         }
 
-        for (int i = 0; i < hex.length(); ++i) {
+        for (int i = 0; i < hex.length(); ++i) { //TODO esto es super innecesario, es repetir el for anterior
             if (!(hex.charAt(i) == '0' && i < 6)) {
                 textHex += hex.charAt(i);
             }
@@ -61,8 +61,13 @@ public class ColorsToText {
                     numInt = 15;
                     break;
                 default:
-                    numInt = Integer.parseInt(String.valueOf(textHex.charAt(i)));
-                    break;
+                    try {
+                        numInt = Integer.parseInt(String.valueOf(textHex.charAt(i)));
+                        break;
+                    } catch (NumberFormatException nfe) {
+                        System.out.println("ERROR: El caracter \"" + textHex.charAt(i) + "\" no equivale a un valor en hexadecimal. DETALLES: " + nfe);
+                        textAscii = null;
+                    }
             }
             // 2) Para cada char concatenar otro for para los 4 ultimos elementos del binaryConversor
             for (int j = 0; j < binaryConversor.length; ++j) {
@@ -128,13 +133,18 @@ public class ColorsToText {
         textAscii = "";
 
 
-        for (int i=0; i<textDec.length();++i) {
+        for (int i = 0; i < textDec.length(); ++i) {
             numStr += textDec.charAt(i);
 
             if (numStr.length() == 2) {
-                numInt = Integer.parseInt(numStr);
-                textAscii += abc[numInt % 65];
-                numStr = "";
+                try {
+                    numInt = Integer.parseInt(numStr);
+                    textAscii += abc[(numInt - 65) % 26];
+                    numStr = "";
+                } catch (ArrayIndexOutOfBoundsException aioobe) {
+                    System.out.println("ERROR: Se ha introducido con anterioridad uno o varios caracteres incorrectos. DETALLES: " + aioobe);
+                    textAscii = null;
+                }
             }
         }
         return textAscii;

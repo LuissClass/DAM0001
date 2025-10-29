@@ -10,26 +10,11 @@ public class TextToColors {
     //De Texto a Color
     //TODO Documentacion
     /**
-     * */
-
-    // Esta funcion toma como parametro textAscii (String) y devuelve textDec (String)
-    // Primero se inicializa textDec, porque vamos a contcatenar la respuesta ahi
-    // El primer for recorre todos los caracteres de textAscii
-    // El segundo for recorre por cada letra del abecedario, que estan guardados en el array abc[]
-    // Entonces, por cada letra en textAscii, el if va a comparar si esta coincide con alguna del abecedario
-    // Cada vez que el segundo for itera, se suma 1 a asciiCounter, que es el valor que tiene cada letra del abecedario si lo enumeramos
-    // asciiCounter inicia en 65 porque en la tabla ASCII la letra "A" inicia con ese numero decimal
-    // Cada vez que el primer for itera, asciiCounter se restablece a 65
-    // Cada vez que se entra en el if se concatena el Integer de asciiCounter en textDec
-    // Finalmente, cuando ya no hay mas caracteres en textAscii, se retorna textDec como Integer
-    // textDec se restablece al inicio de la funcion porque es una variable static**/
-
-    /**
      *
      * @param textAscii
      * @return
      */
-    private String asciiToDec(String textAscii) { // TODO, cuidado cuando se le ponga de parametro algo que no sea una letra
+    private String asciiToDec(String textAscii) { // TODO, faltan breaks y excepciones
         textDec = "";
         for (int i = 0; i < textAscii.length(); ++i) {
             for (char letter : abc) {
