@@ -212,11 +212,16 @@ public class MaquinaRefrescosC7 {
     }
 
     void recibirDinero() {
-
+        centimo.setCentimo(centimo.getCentimo() + monedasIntroducidas.getCentimo());
+        dosCentimos.setCentimo(dosCentimos.getDosCentimos() + monedasIntroducidas.getDosCentimos());
+        cincoCentimos.setCentimo(cincoCentimos.getCincoCentimos() + monedasIntroducidas.getCincoCentimos());
+        cincuentaCentimos.setCentimo(cincuentaCentimos.getCincoCentimos() + monedasIntroducidas.getCincuentaCentimos());
+        unEuro.setCentimo(unEuro.getUnEuro() + monedasIntroducidas.getUnEuro());
+        dosEuros.setCentimo(dosEuros.getDosEuros() + monedasIntroducidas.getDosEuros());
     }
 
     void retirarDinero() {
-
+        
     }
 }
 
@@ -246,14 +251,14 @@ class Bebida {
 
 
 class Monedas {
-    int centimo = 0;
-    int dosCentimos = 0;
-    int cincoCentimos = 0;
-    int diezCentimos = 0;
-    int veinteCentimos = 0;
-    int cincuentaCentimos = 0;
-    int unEuro = 0;
-    int dosEuros = 0;
+    private int centimo = 0;
+    private int dosCentimos = 0;
+    private int cincoCentimos = 0;
+    private int diezCentimos = 0;
+    private int veinteCentimos = 0;
+    private int cincuentaCentimos = 0;
+    private int unEuro = 0;
+    private int dosEuros = 0;
 
     public Monedas(int centimo, int dosCentimos, int cincoCentimos, int diezCentimos, int veinteCentimos, int cincuentaCentimos, int unEuro, int dosEuros) {
         this.centimo = centimo;
