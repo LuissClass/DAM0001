@@ -12,22 +12,60 @@ public class MaquinaRefrescosC7 {
     private String codigoIntroducido;
     private double dineroIntroducido;
     private Monedas monedasIntroducidas;
+    private double costoBebida;
     Scanner input = new Scanner(System.in);
+
+    // Monedero de la maquina
+    private Monedas centimo;
+    private Monedas dosCentimos;
+    private Monedas cincoCentimos;
+    private Monedas diezCentimos;
+    private Monedas veinteCentimos;
+    private Monedas cincuentaCentimos;
+    private Monedas unEuro;
+    private Monedas dosEuros;
 
     public static void main(String[] args) {
         MaquinaRefrescosC7 maquina1 = new MaquinaRefrescosC7();
+        maquina1.crearMonederoInicial();
         maquina1.crearStockInicial();
         maquina1.mostrarMenu();
-
+        maquina1.mostrarBebidas();
     }
 
     void mostrarMenu() {
+        mostrarBebidas();
+        introducirCodigo();
         elegirBebida();
         introducirDinero();
 
         if (hayCompra()) {
             servirBebida();
             devolverCambio();
+        }
+    }
+
+    void mostrarBebidas() {
+        System.out.println();
+        System.out.println("BEBIDAS DISPONIBLES: ");
+
+        if (espacio1 != null) {
+            System.out.println("\t" + espacio1.getNombre() + " - codigo: " + espacio1.getCodigo());
+        }
+        if (espacio2 != null) {
+            System.out.println("\t" + espacio2.getNombre() + " - codigo: " + espacio2.getCodigo());
+        }
+        if (espacio3 != null) {
+            System.out.println("\t" + espacio3.getNombre() + " - codigo: " + espacio3.getCodigo());
+        }
+        if (espacio4 != null) {
+            System.out.println("\t" + espacio4.getNombre() + " - codigo: " + espacio4.getCodigo());
+        }
+        if (espacio5 != null) {
+            System.out.println("\t" + espacio5.getNombre() + " - codigo: " + espacio5.getCodigo());
+        }
+        if (espacio6 != null) {
+            System.out.println("\t" + espacio6.getNombre() + " - codigo: " + espacio6.getCodigo());
         }
     }
 
@@ -49,6 +87,7 @@ public class MaquinaRefrescosC7 {
             bebida = espacio6;
         }
 
+        costoBebida = bebida.getPrecio().calcularDinero();
         return bebida;
     }
 
@@ -66,6 +105,7 @@ public class MaquinaRefrescosC7 {
         int unEuro;
         int dosEuros;
 
+        System.out.println();
         System.out.println("INTRODUCE MONEDAS DE 2 EUROS: ");
         dosEuros = input.nextInt();
         System.out.println("INTRODUCE MONEDAS DE 1 EURO: ");
@@ -84,10 +124,16 @@ public class MaquinaRefrescosC7 {
         centimo = input.nextInt();
 
         monedasIntroducidas = new Monedas(centimo, dosCentimos, cincoCentimos, diezCentimos, veinteCentimos, cincuentaCentimos, unEuro, dosEuros);
+        dineroIntroducido = monedasIntroducidas.calcularDinero();
+        recibirDinero();
+    }
+
+    void introducirCodigo() {
+        System.out.println("Introduce codigo: ");
+        codigoIntroducido = input.nextLine();
     }
 
     boolean esDineroSuficiente() {
-        monedasIntroducidas.calcularDinero();
         if (dineroIntroducido >= elegirBebida().getPrecio().calcularDinero()) {
             return true;
         }
@@ -111,13 +157,25 @@ public class MaquinaRefrescosC7 {
     }
 
     void servirBebida() {
-        restarStock();
         imprimirBebida();
         imprimirCambio();
+        restarStock();
     }
 
     void restarStock() {
-
+        if (elegirBebida() == espacio1) {
+            espacio1 = null;
+        } else if (elegirBebida() == espacio2) {
+            espacio2 = null;
+        } else if (elegirBebida() == espacio3) {
+            espacio3 = null;
+        } else if (elegirBebida() == espacio4) {
+            espacio4 = null;
+        } else if (elegirBebida() == espacio5) {
+            espacio5 = null;
+        } else if (elegirBebida() == espacio6) {
+            espacio6 = null;
+        }
     }
 
     void crearStockInicial() {
@@ -129,16 +187,36 @@ public class MaquinaRefrescosC7 {
         espacio6 = new Bebida(new Monedas(5, 0, 0, 0, 0, 0, 1, 0), "Alcohol 0% Alcohol", "A0A0");
     }
 
+    void crearMonederoInicial() {
+        centimo.setCentimo(10);
+        dosCentimos.setDosCentimos(10);
+        cincoCentimos.setCincoCentimos(10);
+        cincuentaCentimos.setCincuentaCentimos(10);
+        unEuro.setUnEuro(10);
+        dosEuros.setDosEuros(10);
+    }
+
     void imprimirBebida() {
-        System.out.println("Toma tu bebida: " + elegirBebida());
+        System.out.println("\nToma tu '" + elegirBebida().getNombre() + "'");
     }
 
     void imprimirCambio() {
         System.out.println("Toma tu cambio: " + devolverCambio());
     }
 
-    float devolverCambio() {
-        return 0;
+    double devolverCambio() {
+        double cambio = dineroIntroducido - costoBebida;
+
+        retirarDinero();
+        return cambio;
+    }
+
+    void recibirDinero() {
+
+    }
+
+    void retirarDinero() {
+
     }
 }
 
@@ -146,10 +224,6 @@ class Bebida {
     Monedas precio;
     String nombre;
     String codigo;
-
-    public Bebida() {
-
-    }
 
     public Bebida(Monedas precio, String nombre, String codigo) {
         this.precio = precio;
@@ -161,6 +235,10 @@ class Bebida {
         return codigo;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
     public Monedas getPrecio() {
         return precio;
     }
@@ -168,14 +246,14 @@ class Bebida {
 
 
 class Monedas {
-    int centimo;
-    int dosCentimos;
-    int cincoCentimos;
-    int diezCentimos;
-    int veinteCentimos;
-    int cincuentaCentimos;
-    int unEuro;
-    int dosEuros;
+    int centimo = 0;
+    int dosCentimos = 0;
+    int cincoCentimos = 0;
+    int diezCentimos = 0;
+    int veinteCentimos = 0;
+    int cincuentaCentimos = 0;
+    int unEuro = 0;
+    int dosEuros = 0;
 
     public Monedas(int centimo, int dosCentimos, int cincoCentimos, int diezCentimos, int veinteCentimos, int cincuentaCentimos, int unEuro, int dosEuros) {
         this.centimo = centimo;
@@ -193,15 +271,78 @@ class Monedas {
         int sumaEuros;
         double dinero = 0;
 
-        sumaCentimos = centimo + dosCentimos + cincoCentimos;
-        sumaEuros = unEuro + dosEuros;
+        sumaCentimos = centimo + (dosCentimos * 2) + (cincoCentimos * 5) + (cincuentaCentimos * 50);
+        sumaEuros = unEuro + (dosEuros * 2);
 
-        while (sumaCentimos % 100 == 0) {
+        while (sumaCentimos % 100 == 0 && sumaCentimos >= 100) {
             sumaEuros += 1;
             sumaCentimos -= 100;
         }
         dinero = (sumaEuros * 1.0) + (sumaCentimos / 100.0);
-        System.out.println(dinero);
         return dinero;
+    }
+
+    public int getCentimo() {
+        return centimo;
+    }
+
+    public int getDosCentimos() {
+        return dosCentimos;
+    }
+
+    public int getCincoCentimos() {
+        return cincoCentimos;
+    }
+
+    public int getDiezCentimos() {
+        return diezCentimos;
+    }
+
+    public int getVeinteCentimos() {
+        return veinteCentimos;
+    }
+
+    public int getCincuentaCentimos() {
+        return cincuentaCentimos;
+    }
+
+    public int getUnEuro() {
+        return unEuro;
+    }
+
+    public int getDosEuros() {
+        return dosEuros;
+    }
+
+    public void setCentimo(int centimo) {
+        this.centimo = centimo;
+    }
+
+    public void setDosCentimos(int dosCentimos) {
+        this.dosCentimos = dosCentimos;
+    }
+
+    public void setCincoCentimos(int cincoCentimos) {
+        this.cincoCentimos = cincoCentimos;
+    }
+
+    public void setDiezCentimos(int diezCentimos) {
+        this.diezCentimos = diezCentimos;
+    }
+
+    public void setVeinteCentimos(int veinteCentimos) {
+        this.veinteCentimos = veinteCentimos;
+    }
+
+    public void setCincuentaCentimos(int cincuentaCentimos) {
+        this.cincuentaCentimos = cincuentaCentimos;
+    }
+
+    public void setUnEuro(int unEuro) {
+        this.unEuro = unEuro;
+    }
+
+    public void setDosEuros(int dosEuros) {
+        this.dosEuros = dosEuros;
     }
 }
