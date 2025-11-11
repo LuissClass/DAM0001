@@ -1,4 +1,4 @@
-package DAM1;
+package damClase;
 
 import java.util.Scanner;
 
@@ -16,15 +16,7 @@ public class MaquinaRefrescosC7 {
     private Monedas monedasBebida;
     Scanner input = new Scanner(System.in);
 
-    // Monedero de la maquina
-    private final Monedas centimo = new Monedas();
-    private final Monedas dosCentimos = new Monedas();
-    private final Monedas cincoCentimos = new Monedas();
-    private final Monedas diezCentimos = new Monedas();
-    private final Monedas veinteCentimos = new Monedas();
-    private final Monedas cincuentaCentimos = new Monedas();
-    private final Monedas unEuro = new Monedas();
-    private final Monedas dosEuros = new Monedas();
+    private final Monedas monedasEnMaquina = new Monedas();
 
     public static void main(String[] args) {
         MaquinaRefrescosC7 maquina1 = new MaquinaRefrescosC7();
@@ -44,7 +36,6 @@ public class MaquinaRefrescosC7 {
         introducirCodigo();
         elegirBebida();
         introducirDinero();
-        calcularCambio();
 
         if (hayCompra()) { // TODO. ¿Y QUE PASA SI NO HAY MONEDAS EN LA MAQUINA?
             servirBebida();
@@ -114,6 +105,7 @@ public class MaquinaRefrescosC7 {
         int dosEuros;
 
         System.out.println();
+
         System.out.println("INTRODUCE MONEDAS DE 2 EUROS: ");
         dosEuros = input.nextInt();
         System.out.println("INTRODUCE MONEDAS DE 1 EURO: ");
@@ -147,7 +139,7 @@ public class MaquinaRefrescosC7 {
     }
 
     boolean hayCompra() {
-        if (esDineroSuficiente() && hayBebida()) {
+        if (esDineroSuficiente() && hayBebida() && hayCambio()) {
             return true;
         }
         return false;
@@ -184,14 +176,14 @@ public class MaquinaRefrescosC7 {
     }
 
     void crearMonederoInicial() {
-        centimo.setCentimo(10);
-        dosCentimos.setDosCentimos(10);
-        cincoCentimos.setCincoCentimos(10);
-        diezCentimos.setDiezCentimos(10);
-        veinteCentimos.setVeinteCentimos(10);
-        cincuentaCentimos.setCincuentaCentimos(10);
-        unEuro.setUnEuro(10);
-        dosEuros.setDosEuros(10);
+        monedasEnMaquina.setCentimo(10);
+        monedasEnMaquina.setDosCentimos(10);
+        monedasEnMaquina.setCincoCentimos(10);
+        monedasEnMaquina.setDiezCentimos(10);
+        monedasEnMaquina.setVeinteCentimos(10);
+        monedasEnMaquina.setCincuentaCentimos(10);
+        monedasEnMaquina.setUnEuro(10);
+        monedasEnMaquina.setDosEuros(10);
     }
 
     void imprimirBebida() {
@@ -199,76 +191,82 @@ public class MaquinaRefrescosC7 {
     }
 
     void darCambio() {
-        retirarMonedas();
+        retirarMonedasDeMaquina(returnCambio());
         imprimirCambio();
     }
 
     void imprimirCambio() {
-        System.out.println("SE HA ENTREGADO " + returnCambio() + "€ DE CAMBIO");
+        System.out.println("SE HA ENTREGADO " + returnCambio().calcularDinero() + "€ DE CAMBIO");
     }
 
-    String returnCambio() {
-        return monedasIntroducidas.calcularDiferenciaDeMonedas(monedasBebida).calcularDinero();
+    Monedas returnCambio() {
+        return monedasIntroducidas.calcularDiferenciaDeMonedas(monedasBebida);
     }
 
     void recibirDinero() {
-        centimo.setCentimo(centimo.getCentimo() + monedasIntroducidas.getCentimo());
-        dosCentimos.setDosCentimos(dosCentimos.getDosCentimos() + monedasIntroducidas.getDosCentimos());
-        cincoCentimos.setCincoCentimos(cincoCentimos.getCincoCentimos() + monedasIntroducidas.getCincoCentimos());
-        diezCentimos.setDiezCentimos(diezCentimos.getDiezCentimos() + monedasIntroducidas.getDiezCentimos());
-        veinteCentimos.setVeinteCentimos(veinteCentimos.getVeinteCentimos() + monedasIntroducidas.getVeinteCentimos());
-        cincuentaCentimos.setCincuentaCentimos(cincuentaCentimos.getCincuentaCentimos() + monedasIntroducidas.getCincuentaCentimos());
-        unEuro.setUnEuro(unEuro.getUnEuro() + monedasIntroducidas.getUnEuro());
-        dosEuros.setDosEuros(dosEuros.getDosEuros() + monedasIntroducidas.getDosEuros());
+        monedasEnMaquina.setCentimo(monedasEnMaquina.getCentimo() + monedasIntroducidas.getCentimo());
+        monedasEnMaquina.setDosCentimos(monedasEnMaquina.getDosCentimos() + monedasIntroducidas.getDosCentimos());
+        monedasEnMaquina.setCincoCentimos(monedasEnMaquina.getCincoCentimos() + monedasIntroducidas.getCincoCentimos());
+        monedasEnMaquina.setDiezCentimos(monedasEnMaquina.getDiezCentimos() + monedasIntroducidas.getDiezCentimos());
+        monedasEnMaquina.setVeinteCentimos(monedasEnMaquina.getVeinteCentimos() + monedasIntroducidas.getVeinteCentimos());
+        monedasEnMaquina.setCincuentaCentimos(monedasEnMaquina.getCincuentaCentimos() + monedasIntroducidas.getCincuentaCentimos());
+        monedasEnMaquina.setUnEuro(monedasEnMaquina.getUnEuro() + monedasIntroducidas.getUnEuro());
+        monedasEnMaquina.setDosEuros(monedasEnMaquina.getDosEuros() + monedasIntroducidas.getDosEuros());
     }
 
     // TODO SI NO HAY CAMBIO, AL ELEGIR LA BEBIDA SE LE AVISARA AL USUARIO "INSERTE MONTO EXACTO". SI NO HACE CASO, DEVOLVERA EL DINERO INMEDIATAMENTE
-    void retirarMonedas() {
-        Monedas cambio = monedasIntroducidas.calcularDiferenciaDeMonedas(monedasBebida);
-        double devuelto = 0;
+    boolean hayCambio() {
+    }
 
-        while (devuelto != cambio) {
-            if (dosEuros.getDosEuros() >= 1) {
-                dosEuros.setDosEuros(dosEuros.getDosEuros() - 1);
-                devuelto += 2;
+    void retirarMonedasDeMaquina(Monedas monedas) {
+        Monedas monedasSacadas = new Monedas();
+
+        while (!monedasSacadas.calcularDiferenciaDeMonedas(monedas).equals(new Monedas())) {
+            if (monedasEnMaquina.getDosEuros() - monedas.getDosEuros() >= 0) {
+                monedasEnMaquina.setDosEuros(monedasEnMaquina.getDosEuros() - monedas.getDosEuros());
+                monedasSacadas.setDosEuros(1);
             }
-            if (unEuro.getUnEuro() >= 1) {
-                unEuro.setUnEuro(unEuro.getUnEuro() - 1);
-                devuelto += 1;
+            if (monedasEnMaquina.getUnEuro() - monedas.getUnEuro() >= 0) {
+                monedasEnMaquina.setUnEuro(monedasEnMaquina.getUnEuro() - monedas.getUnEuro());
+                monedasSacadas.setUnEuro(1);
             }
-            if (cincuentaCentimos.getCincuentaCentimos() >= 1) {
-                cincuentaCentimos.setCincuentaCentimos(cincuentaCentimos.getCincuentaCentimos() - 1);
-                devuelto += 0.5;
+            if (monedasEnMaquina.getCincuentaCentimos() - monedas.getCincuentaCentimos() >= 0) {
+                monedasEnMaquina.setCincuentaCentimos(monedasEnMaquina.getCincuentaCentimos() - monedas.getCincuentaCentimos());
+                monedasSacadas.setCincuentaCentimos(1);
             }
-            if (veinteCentimos.getVeinteCentimos() >= 1) {
-                veinteCentimos.setVeinteCentimos(veinteCentimos.getVeinteCentimos() - 1);
-                devuelto += 0.2;
+            if (monedasEnMaquina.getVeinteCentimos() - monedas.getVeinteCentimos() >= 0) {
+                monedasEnMaquina.setVeinteCentimos(monedasEnMaquina.getVeinteCentimos() - monedas.getVeinteCentimos());
+                monedasSacadas.setVeinteCentimos(1);
             }
-            if (diezCentimos.getDiezCentimos() >= 1) {
-                diezCentimos.setDiezCentimos(diezCentimos.getDiezCentimos() - 1);
-                devuelto += 0.1;
+            if (monedasEnMaquina.getDiezCentimos() - monedas.getDiezCentimos() >= 0) {
+                monedasEnMaquina.setDiezCentimos(monedasEnMaquina.getDiezCentimos() - monedas.getDiezCentimos());
+                monedasSacadas.setDiezCentimos(1);
             }
-            if (dosCentimos.getDosCentimos() >= 1) {
-                dosCentimos.setDosCentimos(dosCentimos.getDosCentimos() - 1);
-                devuelto += 0.02;
+            if (monedasEnMaquina.getCincoCentimos() - monedas.getCincoCentimos() >= 0) {
+                monedasEnMaquina.setCincoCentimos(monedasEnMaquina.getCincoCentimos() - monedas.getCincoCentimos());
+                monedasSacadas.setCincoCentimos(1);
             }
-            if (centimo.getCentimo() >= 1) {
-                centimo.setCentimo(centimo.getCentimo() - 1);
-                devuelto += 0.01;
+            if (monedasEnMaquina.getDosCentimos() - monedas.getDosCentimos() >= 0) {
+                monedasEnMaquina.setDosCentimos(monedasEnMaquina.getDosCentimos() - monedas.getDosCentimos());
+                monedasSacadas.setDosCentimos(1);
+            }
+            if (monedasEnMaquina.getCentimo() - monedas.getCentimo() >= 0) {
+                monedasEnMaquina.setCentimo(monedasEnMaquina.getCentimo() - monedas.getCentimo());
+                monedasSacadas.setCentimo(1);
             }
         }
     }
 
     void mostrarMonedas() {
         System.out.println("MONEDAS RESTANTES EN MAQUINA: ");
-        System.out.println("\tcentimo: " + centimo.getCentimo());
-        System.out.println("\tdosCentimos: " + dosCentimos.getDosCentimos());
-        System.out.println("\tcincoCentimos: " + cincoCentimos.getCincoCentimos());
-        System.out.println("\tdiezCentimos: " + diezCentimos.getDiezCentimos());
-        System.out.println("\tveinteCentimos: " + veinteCentimos.getVeinteCentimos());
-        System.out.println("\tcincuentaCentimos: " + cincuentaCentimos.getCincuentaCentimos());
-        System.out.println("\tunEuro: " + unEuro.getUnEuro());
-        System.out.println("\tdosEuros: " + dosEuros.getDosEuros());
+        System.out.println("\tcentimo: " + monedasEnMaquina.getCentimo());
+        System.out.println("\tdosCentimos: " + monedasEnMaquina.getDosCentimos());
+        System.out.println("\tcincoCentimos: " + monedasEnMaquina.getCincoCentimos());
+        System.out.println("\tdiezCentimos: " + monedasEnMaquina.getDiezCentimos());
+        System.out.println("\tveinteCentimos: " + monedasEnMaquina.getVeinteCentimos());
+        System.out.println("\tcincuentaCentimos: " + monedasEnMaquina.getCincuentaCentimos());
+        System.out.println("\tunEuro: " + monedasEnMaquina.getUnEuro());
+        System.out.println("\tdosEuros: " + monedasEnMaquina.getDosEuros());
     }
 }
 
@@ -334,6 +332,14 @@ class Monedas {
             sumaCentimos -= 100;
         }
         return sumaEuros + "." + sumaCentimos;
+    }
+
+    void sumarCentimo() {
+        centimo++;
+    }
+
+    void sumarDosC {
+        
     }
 
     boolean valeMasQue(Monedas monedasBebida) {
