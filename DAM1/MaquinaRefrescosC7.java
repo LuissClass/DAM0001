@@ -1,4 +1,4 @@
-package damClase;
+package DAM1;
 
 import java.util.Scanner;
 
@@ -38,8 +38,8 @@ public class MaquinaRefrescosC7 {
         introducirDinero();
 
         if (hayCompra()) { // TODO. ¿Y QUE PASA SI NO HAY MONEDAS EN LA MAQUINA?
-            servirBebida();
             darCambio();
+            servirBebida();
         }
     }
 
@@ -216,45 +216,33 @@ public class MaquinaRefrescosC7 {
 
     // TODO SI NO HAY CAMBIO, AL ELEGIR LA BEBIDA SE LE AVISARA AL USUARIO "INSERTE MONTO EXACTO". SI NO HACE CASO, DEVOLVERA EL DINERO INMEDIATAMENTE
     boolean hayCambio() {
+        boolean res = false;
+
+        if (returnCambio() != null) {
+            int cambioEuros = returnCambio().getSumaEuros();
+            int cambioCentimos = returnCambio().getSumaCentimos();
+
+            if (monedasEnMaquina.calcularMonedas(cambioEuros, cambioCentimos) != null) {
+                res = true;
+            }
+        }
+        return res;
     }
 
     void retirarMonedasDeMaquina(Monedas monedas) {
-        Monedas monedasSacadas = new Monedas();
+        int eurosSacar = monedas.getSumaEuros();
+        int centimosSacar = monedas.getSumaCentimos();
 
-        while (!monedasSacadas.calcularDiferenciaDeMonedas(monedas).equals(new Monedas())) {
-            if (monedasEnMaquina.getDosEuros() - monedas.getDosEuros() >= 0) {
-                monedasEnMaquina.setDosEuros(monedasEnMaquina.getDosEuros() - monedas.getDosEuros());
-                monedasSacadas.setDosEuros(1);
-            }
-            if (monedasEnMaquina.getUnEuro() - monedas.getUnEuro() >= 0) {
-                monedasEnMaquina.setUnEuro(monedasEnMaquina.getUnEuro() - monedas.getUnEuro());
-                monedasSacadas.setUnEuro(1);
-            }
-            if (monedasEnMaquina.getCincuentaCentimos() - monedas.getCincuentaCentimos() >= 0) {
-                monedasEnMaquina.setCincuentaCentimos(monedasEnMaquina.getCincuentaCentimos() - monedas.getCincuentaCentimos());
-                monedasSacadas.setCincuentaCentimos(1);
-            }
-            if (monedasEnMaquina.getVeinteCentimos() - monedas.getVeinteCentimos() >= 0) {
-                monedasEnMaquina.setVeinteCentimos(monedasEnMaquina.getVeinteCentimos() - monedas.getVeinteCentimos());
-                monedasSacadas.setVeinteCentimos(1);
-            }
-            if (monedasEnMaquina.getDiezCentimos() - monedas.getDiezCentimos() >= 0) {
-                monedasEnMaquina.setDiezCentimos(monedasEnMaquina.getDiezCentimos() - monedas.getDiezCentimos());
-                monedasSacadas.setDiezCentimos(1);
-            }
-            if (monedasEnMaquina.getCincoCentimos() - monedas.getCincoCentimos() >= 0) {
-                monedasEnMaquina.setCincoCentimos(monedasEnMaquina.getCincoCentimos() - monedas.getCincoCentimos());
-                monedasSacadas.setCincoCentimos(1);
-            }
-            if (monedasEnMaquina.getDosCentimos() - monedas.getDosCentimos() >= 0) {
-                monedasEnMaquina.setDosCentimos(monedasEnMaquina.getDosCentimos() - monedas.getDosCentimos());
-                monedasSacadas.setDosCentimos(1);
-            }
-            if (monedasEnMaquina.getCentimo() - monedas.getCentimo() >= 0) {
-                monedasEnMaquina.setCentimo(monedasEnMaquina.getCentimo() - monedas.getCentimo());
-                monedasSacadas.setCentimo(1);
-            }
-        }
+        Monedas monedasEspecificasSacar = monedasEnMaquina.calcularMonedas(eurosSacar, centimosSacar);
+
+        monedasEnMaquina.restarDosEuros(monedasEspecificasSacar.getDosEuros());
+        monedasEnMaquina.restarEuro(monedasEspecificasSacar.getUnEuro());
+        monedasEnMaquina.restarCincuentaC(monedasEspecificasSacar.getCincuentaCentimos());
+        monedasEnMaquina.restarVeinteC(monedasEspecificasSacar.getVeinteCentimos());
+        monedasEnMaquina.restarDiezC(monedasEspecificasSacar.getDiezCentimos());
+        monedasEnMaquina.restarCincoC(monedasEspecificasSacar.getCincoCentimos());
+        monedasEnMaquina.restarDosC(monedasEspecificasSacar.getDosCentimos());
+        monedasEnMaquina.restarCentimo(monedasEspecificasSacar.getCentimo());
     }
 
     void mostrarMonedas() {
@@ -323,7 +311,7 @@ class Monedas {
         this.dosEuros = dosEuros;
     }
 
-    String calcularDinero() {
+    void calcularSumasEurosYCentimos() {
         sumaCentimos = centimo + (dosCentimos * 2) + (cincoCentimos * 5) + (cincuentaCentimos * 50);
         sumaEuros = unEuro + (dosEuros * 2);
 
@@ -331,23 +319,173 @@ class Monedas {
             sumaEuros += 1;
             sumaCentimos -= 100;
         }
+    }
+
+    String calcularDinero() {
         return sumaEuros + "." + sumaCentimos;
     }
 
-    void sumarCentimo() {
-        centimo++;
+    /**
+     * Metodo que calcula una cantidad de Monedas a partir de euros y centimos. Monedas que se encuentran en el monedero que invoca el metodo.
+     */
+    Monedas calcularMonedas(int euros, int centimos) {
+        Monedas res = new Monedas();
+        boolean faltanEuros = false;
+        boolean faltanCentimos = false;
+
+        while (euros > 0 && centimos > 0 && !faltanEuros && !faltanCentimos) {
+            if (euros >= 2 && dosEuros > 0) {
+                res.sumarDosEuros(1);
+                euros -= 2;
+            } else if (euros >= 1 && unEuro > 0) {
+                res.sumarEuro(1);
+                euros -= 1;
+            } else {
+                faltanEuros = true;
+            }
+
+            if (centimos >= 50 && cincuentaCentimos > 0) {
+                res.sumarCincuentaC(1);
+                centimos -= 50;
+            } else if (centimos >= 20 && veinteCentimos > 0) {
+                res.sumarVeinteC(1);
+                centimos -= 20;
+            } else if (centimos >= 10 && diezCentimos > 0) {
+                res.sumarDiezC(1);
+                centimos -= 10;
+            } else if (centimos >= 5 && cincoCentimos > 0) {
+                res.sumarCincoC(1);
+                centimos -= 5;
+            } else if (centimos >= 2 && dosCentimos > 0) {
+                res.sumarDosC(1);
+                centimos -= 2;
+            } else if (centimos >= 1 && centimo > 0) {
+                res.sumarCentimo(1);
+                centimos -= 1;
+            } else {
+                faltanCentimos = true;
+            }
+        }
+
+        if (faltanEuros || faltanCentimos) {
+            res = null;
+        } else {
+            res.calcularSumasEurosYCentimos();
+        }
+        return res;
     }
 
-    void sumarDosC {
-        
+    boolean valeMasQue(Monedas monedas) {
+        return sumaEuros >= monedas.sumaEuros && sumaCentimos >= monedas.sumaCentimos;
     }
 
-    boolean valeMasQue(Monedas monedasBebida) {
-        return sumaEuros >= monedasBebida.sumaEuros && sumaCentimos > monedasBebida.sumaCentimos;
+    Monedas calcularDiferenciaDeMonedas(Monedas monedas) {
+        Monedas res = new Monedas();
+        int difEuros = sumaEuros - monedas.getSumaEuros();
+        int difCent = sumaCentimos - monedas.getSumaCentimos();
+
+        if (difEuros >= 0 && difCent >= 0) {
+            while (difEuros >= 0 && difCent >= 0) {
+                if (difEuros >= 2) {
+                    res.sumarDosEuros(1);
+                    difEuros -= 2;
+                } else if (difEuros >= 1) {
+                    res.sumarEuro(1);
+                    difEuros -= 1;
+                }
+
+                if (difCent >= 50) {
+                    res.sumarCincuentaC(1);
+                    difCent -= 50;
+                } else if (difCent >= 20) {
+                    res.sumarVeinteC(1);
+                    difCent -= 20;
+                } else if (difCent >= 10) {
+                    res.sumarDiezC(1);
+                    difCent -= 10;
+                } else if (difCent >= 5) {
+                    res.sumarCincoC(1);
+                    difCent -= 5;
+                } else if (difCent >= 2) {
+                    res.sumarDosC(1);
+                    difCent -= 2;
+                } else if (difCent >= 1) {
+                    res.sumarCentimo(1);
+                    difCent -= 1;
+                }
+            }
+            res.calcularSumasEurosYCentimos();
+        } else {
+            res = null;
+        }
+        return res;
     }
 
-    Monedas calcularDiferenciaDeMonedas(Monedas monedasBebida) {
-        return new Monedas();
+    // Métodos para sumar
+    void sumarCentimo(int cantidad) {
+        centimo += cantidad;
+    }
+
+    void sumarDosC(int cantidad) {
+        dosCentimos += cantidad;
+    }
+
+    void sumarCincoC(int cantidad) {
+        cincoCentimos += cantidad;
+    }
+
+    void sumarDiezC(int cantidad) {
+        diezCentimos += cantidad;
+    }
+
+    void sumarVeinteC(int cantidad) {
+        veinteCentimos += cantidad;
+    }
+
+    void sumarCincuentaC(int cantidad) {
+        cincuentaCentimos += cantidad;
+    }
+
+    void sumarEuro(int cantidad) {
+        unEuro += cantidad;
+    }
+
+    void sumarDosEuros(int cantidad) {
+        dosEuros += cantidad;
+    }
+
+
+    // Métodos para restar
+    void restarCentimo(int cantidad) {
+        centimo -= cantidad;
+    }
+
+    void restarDosC(int cantidad) {
+        dosCentimos -= cantidad;
+    }
+
+    void restarCincoC(int cantidad) {
+        cincoCentimos -= cantidad;
+    }
+
+    void restarDiezC(int cantidad) {
+        diezCentimos -= cantidad;
+    }
+
+    void restarVeinteC(int cantidad) {
+        veinteCentimos -= cantidad;
+    }
+
+    void restarCincuentaC(int cantidad) {
+        cincuentaCentimos -= cantidad;
+    }
+
+    void restarEuro(int cantidad) {
+        unEuro -= cantidad;
+    }
+
+    void restarDosEuros(int cantidad) {
+        dosEuros -= cantidad;
     }
 
     public int getSumaCentimos() {
