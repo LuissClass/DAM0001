@@ -14,6 +14,7 @@ public class MaquinaRefrescosC7 {
     private Monedas monedasIntroducidas;
     private String dineroBebida;
     private Monedas monedasBebida;
+    private Monedas monedasCambio;
     Scanner input = new Scanner(System.in);
 
     private final Monedas monedasEnMaquina = new Monedas();
@@ -86,6 +87,7 @@ public class MaquinaRefrescosC7 {
         }
 
         monedasBebida = bebida.getPrecio();
+        monedasBebida.calcularSumasEurosYCentimos();
         dineroBebida = bebida.getPrecio().calcularDinero();
         return bebida;
     }
@@ -124,8 +126,8 @@ public class MaquinaRefrescosC7 {
         centimo = input.nextInt();
 
         monedasIntroducidas = new Monedas(centimo, dosCentimos, cincoCentimos, diezCentimos, veinteCentimos, cincuentaCentimos, unEuro, dosEuros);
+        monedasIntroducidas.calcularSumasEurosYCentimos();
         dineroIntroducido = monedasIntroducidas.calcularDinero();
-        System.out.println("ESTO ES EL DINERO >>>>>>>>>>>>>> " + dineroIntroducido);
         recibirDinero();
     }
 
@@ -184,23 +186,28 @@ public class MaquinaRefrescosC7 {
         monedasEnMaquina.setCincuentaCentimos(10);
         monedasEnMaquina.setUnEuro(10);
         monedasEnMaquina.setDosEuros(10);
+        monedasEnMaquina.calcularSumasEurosYCentimos();
     }
 
     void imprimirBebida() {
-        System.out.println("\nSE HA ENTREGADO BEBIDA '" + elegirBebida().getNombre() + "'");
+        System.out.println(">>>SE HA ENTREGADO BEBIDA '" + elegirBebida().getNombre() + "'");
     }
 
     void darCambio() {
-        retirarMonedasDeMaquina(returnCambio());
+        retirarMonedasDeMaquina(getMonedasCambio());
         imprimirCambio();
     }
 
     void imprimirCambio() {
-        System.out.println("SE HA ENTREGADO " + returnCambio().calcularDinero() + "€ DE CAMBIO");
+        System.out.println(">>>SE HA ENTREGADO " + getMonedasCambio().calcularDinero() + "€ DE CAMBIO");
     }
 
-    Monedas returnCambio() {
-        return monedasIntroducidas.calcularDiferenciaDeMonedas(monedasBebida);
+    void calcularMonedasCambio() {
+        monedasCambio = monedasIntroducidas.calcularDiferenciaDeMonedas(monedasBebida);
+    }
+
+    public Monedas getMonedasCambio() {
+        return monedasCambio;
     }
 
     void recibirDinero() {
@@ -217,10 +224,11 @@ public class MaquinaRefrescosC7 {
     // TODO SI NO HAY CAMBIO, AL ELEGIR LA BEBIDA SE LE AVISARA AL USUARIO "INSERTE MONTO EXACTO". SI NO HACE CASO, DEVOLVERA EL DINERO INMEDIATAMENTE
     boolean hayCambio() {
         boolean res = false;
+        calcularMonedasCambio();
 
-        if (returnCambio() != null) {
-            int cambioEuros = returnCambio().getSumaEuros();
-            int cambioCentimos = returnCambio().getSumaCentimos();
+        if (getMonedasCambio() != null) {
+            int cambioEuros = getMonedasCambio().getSumaEuros();
+            int cambioCentimos = getMonedasCambio().getSumaCentimos();
 
             if (monedasEnMaquina.calcularMonedas(cambioEuros, cambioCentimos) != null) {
                 res = true;
@@ -333,7 +341,7 @@ class Monedas {
         boolean faltanEuros = false;
         boolean faltanCentimos = false;
 
-        while (euros > 0 && centimos > 0 && !faltanEuros && !faltanCentimos) {
+        while (((euros > 0 && centimos >= 0) || ((euros >= 0 && centimos > 0))) && !faltanEuros && !faltanCentimos) {
             if (euros >= 2 && dosEuros > 0) {
                 res.sumarDosEuros(1);
                 euros -= 2;
@@ -385,7 +393,7 @@ class Monedas {
         int difCent = sumaCentimos - monedas.getSumaCentimos();
 
         if (difEuros >= 0 && difCent >= 0) {
-            while (difEuros >= 0 && difCent >= 0) {
+            while ((difEuros != 0 && difCent >= 0) || (difEuros >= 0 && difCent != 0)) {
                 if (difEuros >= 2) {
                     res.sumarDosEuros(1);
                     difEuros -= 2;
