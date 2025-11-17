@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html>
+
+<body>
+    <h1>Información</h1>
+    <h2>Información del Usuario</h2>
+
+    <form action="lista.html" method="get">
+        <fieldset>
+            <legend>Datos de Identificación</legend>
+            <label for="">País de Residencia:</label>
+            <input type="text" name="" list="artistas">
+            <datalist id="artistas">
+                <option value="España">
+                <option value="Portugal">
+                <option value="Francia">
+                <option value="Alemania">
+                <option value="Italia">
+            </datalist>
+            <br>
+            <label for="">Introduce tu DNI (8 dígitos, un guion y 1 letra):</label>
+            <input type="text" name="" id="" pattern="^[0-9]{8}[_][A-Z]$" placeholder="12345678-A" required>
+            <br>
+            <label for="">Fecha de Nacimiento</label>
+            <input type="date" name="" id="">
+        </fieldset>
+
+        <fieldset>
+            <legend>Selecciona tus aficiones (puedes elegir varios)</legend>
+            <table>
+                <tr>
+                    <td style="border: 1px solid black">
+                        <label for="">Deportes</label><br>
+                        <input type="checkbox" name="" id="">
+                        <label for="">Futbol</label><br>
+                        <input type="checkbox" name="" id="" checked>
+                        <label for="">Tenis</label><br>
+                        <input type="checkbox" name="" id="">
+                        <label for="">Padel</label><br>
+                        <input type="checkbox" name="" id="">
+                        <label for="">Otro</label>
+                    </td>
+                    <td style="border: 1px solid black">
+                        <label for="">Otros</label><br>
+                        <input type="radio" name="aficion" id="">
+                        <label for="">Lectura</label><br>
+                        <input type="radio" name="aficion" id="">
+                        <label for="">Viajar</label><br>
+                        <input type="radio" name="aficion" id="">
+                        <label for="">Escuchar música</label><br>
+                        <input type="radio" name="aficion" id="">
+                        <label for="">Ver cone/series</label>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>Salario Deseado (Rango)</legend>
+            <label for="">Selecciona tu salario: </label>
+            <input type="range" name="" id="" value="1200" min="1200" max="10000" oninput="salario.value=this.value">
+            <output name="salario">1200</output>€
+        </fieldset>
+        <fieldset>
+            <label for="">Observaciones:</label>
+            <textarea name="" id="" rows="3" maxlength="100" style="width: 290px;"></textarea>
+        </fieldset>
+        <br>
+        <input type="submit" value="Enviar Formulario">
+        <input type="reset" value="Restaurar Campos">
+    </form>
+</body>
+
+</html>
