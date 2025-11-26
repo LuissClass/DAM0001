@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+    <body>
+        <form action="hola.html" style="margin-left: 31%;">
+            <table>
+                <th>
+                    <label for="usuarioLogin">Nombre de usuario</label>
+                </th>
+
+                <tr>
+                    <td>
+                        <input type="text" name="usuarioLogin" pattern="^[a-zA-Z0-9]{6,15}$" required>
+                    </td>
+                </tr>
+
+                <th>
+                    <label for="passwdLogin">Password</label>
+                </th>
+
+                <tr>
+                    <td>
+                        <input type="password" name="passwdLogin" pattern="^.{8}*$">
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <input type="submit" value="Subt1t">
+        </form>
+    </body>
+</html>

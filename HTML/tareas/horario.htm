@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borde de las tablas</title>
+
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        td {
+            background-color: #BBBBBB;
+        }
+        
+        
+    </style>
+</head>
+
+<body>
+    <table border-collapse: collapse;>
+        <caption>HORARIO 1DAM - 2025</caption>
+        <thead border-bottom: 1px solid black;>
+            <tr>
+                <th>/~\</th>
+                <th>Lunes</th>
+                <th>Martes</th>
+                <th>Miércoles</th>
+                <th>Jueves</th>
+                <th>Viernes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>8:25<br>9:20</td>
+                <td rowspan="2">Bases de datos</td>
+                <td>IPE</td>
+                <td rowspan="3">Programacion</td>
+                <td rowspan="2">SisInf</td>
+                <td rowspan="2">LengDeMarYSisDeG</td>
+            </tr>
+            <tr>
+                <td>9:20 <br>10:15</td>
+                <td>Cloud</td>
+            </tr>
+            <tr>
+                <td>10:15 <br>11:10</td>
+                <td rowspan="2" colspan="2">SisInf</td>
+                <td rowspan="2">Programacion</td>
+                <td>IPE</td>
+            </tr>
+            <tr>
+                <td>11:10 <br>12:05</td>
+                <td>Cloud</td>
+                <td>EntDeDes</td>
+            </tr>
+            <tr>
+                <th colspan="6">recreo</th>
+            </tr>
+            <tr>
+                <td>12:30 <br>13:25</td>
+                <td>IPE</td>
+                <td>EntDeDes</td>
+                <td>LenDeMarYSisDeG</td>
+                <td>Programacion</td>
+                <td rowspan="3">Bases de datos</td>
+            </tr>
+            <tr>
+                <td>13:25 <br>14:20</td>
+                <td></td>
+                <td rowspan="2">Programacion</td>
+                <td></td>
+                <td rowspan="2">Bases de datos</td>
+            </tr>
+            <tr>
+                <td>14:20 <br>15:15</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+
+</body></html>

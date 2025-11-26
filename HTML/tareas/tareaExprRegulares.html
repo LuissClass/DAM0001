@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <p>Escribe diferentes tipos de cadenas segun las restricciones: </p>
+    <form action="correcto.html">
+        <label for="">Contiene "axxa": </label>
+        <input type="text" pattern=".*axxa.*"><br>
+        <label for="">Empieza por "axxa": </label>
+        <input type="text" pattern="^axxa.*"><br>
+        <label for="">Empieza por 'a'(mayúscula o minúscula) seguida de 'bc' y después cualquier cosa: </label>
+        <input type="text" pattern="^[aA]bc.*"><br>
+        <label for="">Tiene letras mayúsculas o minúsculas de una longitud entre 5 y 10 caracteres ambos
+            incluidos:</label>
+        <input type="text" pattern="[A-Za-z]{5,10}"><br>
+        <label for="">No empieza por un dígito: </label>
+        <input type="text" pattern="[^0-9].*"><br>
+        <label for="">No termine por un dígito: </label>
+        <input type="text" pattern=".*[^0-9]"><br>
+        <label for="">No termine por un dígito: </label>
+        <input type="text" pattern="[ab]*"><br>
+        <label for="">Número de matrícula en el instituto: </label>
+        <input type="text" pattern="[G][S][0-9]{4}"><br>
+        <label for="">DNI Válido: </label>
+        <input type="text" pattern="[0-9]{8}[A-HJ-NP-TV-Z]"><br>
+        <br><input type="submit" value="Submit una respuesta">
+    </form>
+
+</body>
+
+</html>
