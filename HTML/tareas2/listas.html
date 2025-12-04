@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .disco {
+            list-style: disc;
+        }
+
+        .circulo {
+            list-style: circle;
+        }
+
+        .cuadrado {
+            list-style: square;
+        }
+
+        ol:nth-of-type(2) {
+            li:nth-child(1) {
+                list-style: decimal;
+            }
+
+            li:nth-child(2) {
+                list-style: decimal-leading-zero;
+            }
+
+            li:nth-child(3) {
+                list-style: upper-roman;
+            }
+
+            li:nth-child(4) {
+                list-style: lower-roman;
+            }
+
+            li:nth-child(5) {
+                list-style: upper-alpha;
+            }
+
+            li:nth-child(6) {
+                list-style: upper-alpha;
+            }
+        }
+
+        .li_con_img {
+            list-style-image: url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.rw-designer.com%2Fcursor-view%2F143289.png&f=1&nofb=1&ipt=94f40d217aa537b31d31861a9f416df9389d6076fbe1da54e181284e0e652dd8");
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Act. 14</h2>
+    <ol>
+        <li class="disco">Disco circular</li>
+        <li class="circulo">Circulo redondo</li>
+        <li class="cuadrado">Cuadrado cuadrangular</li>
+    </ol>
+    <br>
+    <ol>
+        <li>Decimal</li>
+        <li>Decimal</li>
+        <li>Romanos en mayúsculas</li>
+        <li>Romanos en minúsculas</li>
+        <li>Alfabeto en mayúsculas</li>
+        <li>Alfabeto en minúsculas</li>
+    </ol>
+
+    <h2>Act. 15</h2>
+    <ol>
+        <li class="li_con_img">Pacman1</li>
+        <li class="li_con_img">pacman-2</li>
+        <li class="li_con_img">pacman3</li>
+        <li class="li_con_img">Pacman-4</li>
+    </ol>
+</body>
+
+</html>
