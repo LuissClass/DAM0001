@@ -1,4 +1,4 @@
-package damClase.EjsM;
+package DAM1.EjsM;
 
 /*
 *
@@ -18,6 +18,8 @@ La aplicación debe mostrar un menú que permita realizar las siguientes operaci
 Se deberá realizar cada opción en un método diferente.
 * */
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class BibliotecaE4 {
@@ -47,6 +49,9 @@ public class BibliotecaE4 {
                 case (6) -> consultaDeLibro();
                 case (7) -> listadoDeUsuarios();
                 case (8) -> listadoDeLibrosNoPrestados();
+                case(9) -> listadoOrdenadoUsuariosPorNumLibros();
+                case(10) -> listadoOrdenadoPorNombre();
+                case(69) -> crearPlantilla();
                 case (0) -> System.out.println("\n\t>>>Finalizando aplicacion...");
             }
         } while (res != 0);
@@ -219,24 +224,86 @@ public class BibliotecaE4 {
         for (int i = 0; i < usuarios.length; i++) {
             if (usuarios[i] != null) {
                 System.out.println("Usuario " + usuarios[i].getId() + ": " + usuarios[i].getName());
-                System.out.println("\n\tLibros prestados: ");
+                System.out.println("\tLibros prestados: ");
                 for (int j = 0; j < usuarios[i].getLibrosPrestados().length; j++) {
                     if (usuarios[i].getLibrosPrestados()[j] != null) {
-                        System.out.println("\n\t\t" + usuarios[i].getLibrosPrestados()[j].getTitle() + " - Codigo: " + usuarios[i].getLibrosPrestados()[j].getCode());
+                        System.out.println("\t\t" + usuarios[i].getLibrosPrestados()[j].getTitle() + " - Codigo: " + usuarios[i].getLibrosPrestados()[j].getCode());
                     }
                 }
             }
         }
     }
 
+    // 8)
     void listadoDeLibrosNoPrestados() {
+        System.out.println("\n\tLibros NO prestados: ");
         for (int j = 0; j < libros.length; j++) {
-            System.out.println("\n\tLibros NO prestados: ");
-
-            if (libros[j] != null && !libroDisponible(libros[j].getCode())) {
-                System.out.println("\n\t\t" +  libros[j].getTitle() + " - Codigo: " + libros[j].getCode());
+            if (libros[j] != null && libroDisponible(libros[j].getCode())) {
+                System.out.println("\t\t" +  libros[j].getTitle() + " - Codigo: " + libros[j].getCode());
             }
         }
+    }
+
+    // 9)
+    void listadoOrdenadoUsuariosPorNumLibros() {
+        UsuarioE4 usuAux;
+        int numUsuarios = devolverNumUsuarios();
+
+        // Usar burbuja
+        for (int i = 0; i < numUsuarios; i++) {
+            for (int j = 0; j < numUsuarios-j-1; j++) {
+                if (usuarios[j+1] != null) {
+                    if (usuarios[j].devolverSoloLibrosPrestados().length < usuarios[j + 1].devolverSoloLibrosPrestados().length) {
+                        usuAux = usuarios[j];
+                        usuarios[j] = usuarios[j + 1];
+                        usuarios[j + 1] = usuAux;
+                    }
+                }
+            }
+        }
+    }
+
+    int devolverNumUsuarios() {
+        int num = 0;
+
+        for (int i = 0; i < usuarios.length; i++) {
+            if (usuarios[i] != null) {
+                num++;
+            }
+        }
+        return num;
+    }
+
+    // 10)
+    void listadoOrdenadoPorNombre() {
+        ordenarLibrosEnUsuarios();
+
+        Arrays.sort(usuarios, 0, devolverNumUsuarios(), Comparator.comparing(UsuarioE4::getName));
+    }
+
+    void ordenarLibrosEnUsuarios() {
+        for (int i = 0; i < devolverNumUsuarios(); i++) {
+            usuarios[i].ordenarLibrosPorCodigo();
+        }
+    }
+
+    // 69)
+    void crearPlantilla() {
+        usuarios[0] = new UsuarioE4(0, "Zack");
+        usuarios[1] = new UsuarioE4(1, "Pepe Prime");
+        usuarios[2] = new UsuarioE4(2, "Pepe Super Sayan");
+
+        libros[40] = new LibroE4(40, "Le prince");
+        libros[23] = new LibroE4(23, "La princeso");
+        libros[4] = new LibroE4(4, "Elle prince");
+        libros[7] = new LibroE4(7, "nose1");
+        libros[98] = new LibroE4(98, "nose2");
+        libros[3] = new LibroE4(3, "nose3");
+
+        meterLibroToUser(40, 0);
+        meterLibroToUser(23,1);
+        meterLibroToUser(4,1);
+        meterLibroToUser(7,1);
     }
 }
 
@@ -284,6 +351,42 @@ class UsuarioE4 {
     UsuarioE4(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public void ordenarLibrosPorCodigo() {
+        LibroE4[] librosSinNull = devolverSoloLibrosPrestados();
+
+        Arrays.sort(librosSinNull, Comparator.comparingInt(LibroE4::getCode));
+
+        Arrays.fill(librosPrestados, null);
+
+        for (int i = 0; i < librosSinNull.length; i++) {
+            librosPrestados[i] = librosSinNull[i];
+        }
+    }
+
+
+    public LibroE4[] devolverSoloLibrosPrestados() {
+        LibroE4[] res;
+        int counter = 0;
+
+        for (int i = 0; i < librosPrestados.length; i++) {
+            if (librosPrestados[i] != null) {
+                counter++;
+            }
+        }
+
+        res = new LibroE4[counter];
+        counter = 0;
+
+        for (int i = 0; i < librosPrestados.length; i++) {
+            if (librosPrestados[i] != null) {
+                res[counter] = librosPrestados[i];
+                counter++;
+            }
+        }
+
+        return res;
     }
 
     public LibroE4[] getLibrosPrestados() {
