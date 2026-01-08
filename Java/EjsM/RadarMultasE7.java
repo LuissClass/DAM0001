@@ -83,9 +83,9 @@ public class RadarMultasE7 {
         t1.getRadar1().addVehiculo(v4);
         t1.getRadar1().addVehiculo(v5);
 
-        System.out.println(System.currentTimeMillis());
+        System.out.println(System.currentTimeMillis()/1000/60/60);
         Thread.sleep(5000);
-        System.out.println(System.currentTimeMillis());
+        System.out.println(System.currentTimeMillis()/1000/60/60);
 
         t1.getRadar2().addVehiculo(v2);
         t1.getRadar2().addVehiculo(v3);
@@ -163,14 +163,14 @@ class RadarE7 {
 
 class VehiculoE7 {
     private String matricula;
-    private long tiempoPaso = (System.currentTimeMillis());
+    private long tiempoPaso = (System.currentTimeMillis()/1000/60/60);
 
     public VehiculoE7(String matricula) {
         this.matricula = matricula;
     }
 
     void updateTiempoPaso() {
-        tiempoPaso = (System.currentTimeMillis());
+        tiempoPaso = (System.currentTimeMillis()/1000/60/60);
     }
 
     public String getMatricula() {
