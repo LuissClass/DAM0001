@@ -13,21 +13,27 @@ public class ListarDirsI1 {
         System.out.println();
         String pathName = "D:\\USERS_NO_BORRAR\\levg51\\Desktop\\UwU";
         File d1 = new File(pathName);
-        contenidoDir(d1, 1);
+        long totalSize = contenidoDir(d1, null, 0);
+        System.out.println("\n>>>Tamaño verificado: " + realSize + " - Tamaño calculado: " + totalSize + " Bytes");
     }
 
-    static void contenidoDir(File dir, int profundidad) {
-        System.out.println("EJECUCION. Dir:" + dir.getName() + " - Profundidad: " + profundidad);
+    static public int realSize = 0;
+
+    static long contenidoDir(File dir, File[] rDirs, long totalSize) {
+        System.out.println("\n./" + dir.getName() + ":");
         String[] list = dir.list();
         File file;
         String tab = "\t";
         int cols = 0;
         String ficheros = "";
 
+        File[] dirs;
+        int dirs_cont = 0;
+
         for (int i = 0; i < list.length; i++) {
             file = new File(dir + "\\" +  list[i]);
 
-                if (cols >= 5) {
+                if (cols >= 2) {
                     cols = 0;
                     ficheros += "\n";
                 }
@@ -43,15 +49,39 @@ public class ListarDirsI1 {
 
                 if (file.isDirectory()) {
                     ficheros += RESET;
+
                 }
 
                 if (file.isDirectory()) {
                     ficheros += "/ ";
+
+                    dirs_cont++;
                 } else { ficheros += "' ";}
 
                 cols++;
+                totalSize += file.length();
+                realSize += file.length();
+                ficheros += " (" + file.length() + "B) ";
+        }
+        System.out.println(ficheros);
+
+        dirs = new File[dirs_cont];
+
+        int pos = 0;
+        for (int i = 0; i < list.length; i++) {
+            file = new File(dir + "\\" +  list[i]);
+
+            if (file.isDirectory()) {
+                dirs[pos] = file;
+                pos++;
+            }
+        }
+        if (dirs.length >= 1) {
+            for (int i = 0; i < dirs.length; i++) {
+                totalSize = contenidoDir(dirs[i], dirs, totalSize);
+            }
         }
 
-        System.out.println(ficheros);
+        return totalSize;
     }
 }
