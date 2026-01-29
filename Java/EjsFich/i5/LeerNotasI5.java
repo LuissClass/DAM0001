@@ -1,10 +1,7 @@
 package DAM1.EjsFich.i5;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Objects;
+import java.io.*;
+import java.util.Scanner;
 
 public class LeerNotasI5 {
     int numAlumnos;
@@ -15,10 +12,11 @@ public class LeerNotasI5 {
         LeerNotasI5 lni5 = new LeerNotasI5();
 
         lni5.mostrarAlumnoConMejorNotaMedia();
+        lni5.escribirNotas(new File("DAM1\\EjsFich\\i5\\notasAlumnos.csv"));
     }
 
-    void mostrarAlumnoConMejorNotaMedia() throws IOException, InterruptedException {
-        leerFich("DAM1\\EjsFich\\i5\\notasAlumnos.csv");
+    void mostrarAlumnoConMejorNotaMedia() throws IOException {
+        leerFich("DAM1\\EjsFich\\i5\\notasMediasAlumnos.txt");
 
         mostrarAlumno(calcularAlumnoConMejorNotaMedia());
     }
@@ -28,8 +26,6 @@ public class LeerNotasI5 {
         notas = new int[n][];
         nombresAlumnos = new String[n];
     }
-
-
 
     void mostrarAlumno(int alumno) {
         System.out.println(nombresAlumnos[alumno] + " tiene la nota media más alta: " + calcuarNotaMedia(alumno)+"");
@@ -60,10 +56,9 @@ public class LeerNotasI5 {
         return res;
     }
 
-    void leerFich(String fich) throws IOException, InterruptedException {
+    void leerFich(String fich) throws IOException {
         String s;
         int contLinea = 0;
-        String[] algo;
         String[] lineas = new String[100];
 
         try (BufferedReader br = new BufferedReader(new FileReader(fich))) {
@@ -87,5 +82,24 @@ public class LeerNotasI5 {
             }
             notas[i-1] = notaActual;
         }
+    }
+
+    void escribirNotas(File f) throws IOException {
+        int cont = 0;
+
+        f.createNewFile();
+
+        BufferedWriter bw=new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
+
+        for (int i = 0; i < numAlumnos; i++) {
+            bw.write(nombresAlumnos[i]+":"+calcuarNotaMedia(i));
+            bw.newLine();
+            cont++;
+        }
+
+        bw.flush();
+        bw.close();
+
+        System.out.println(">>Numeros escritos: " + cont);
     }
 }
