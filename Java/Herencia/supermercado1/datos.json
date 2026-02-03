@@ -1,0 +1,13 @@
+{
+  "name": "Algo",
+  "productos": [
+    {"id": "p1", "name": "Pera", "Precio": 12, "PrecioOferta":  1, "DiasOferta":  10},
+    {"id": "p2", "name": "Pera", "Precio": 12, "PrecioOferta":  1, "DiasOferta":  10}
+  ],
+  "clientes": [
+    {"id":  "Cli-01", "name": "Felo", "passw": "Felo123", "esPreferente": false, "compras": [
+      {"id": "m1", "name": "Manzana", "Precio": 40, "PrecioOferta":  20, "DiasOferta":  0}
+    ]},
+    {"id":  "Cli-02", "name": "Juca", "passw": "123Juca", "esPreferente": false, "compras": null}
+  ]
+}
