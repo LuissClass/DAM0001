@@ -5,9 +5,10 @@
     {"id": "p2", "name": "Pera", "Precio": 12, "PrecioOferta":  1, "DiasOferta":  10}
   ],
   "clientes": [
-    {"id":  "Cli-01", "name": "Felo", "passw": "Felo123", "esPreferente": false, "compras": [
-      {"id": "m1", "name": "Manzana", "Precio": 40, "PrecioOferta":  20, "DiasOferta":  0}
+    {"id":  "Cli-01", "name": "Felo", "passw": "Felo123", "esPreferente": false, "tieneCompras": [
+      {"id": "m1", "name": "Manzana", "Precio": 40, "PrecioOferta":  20, "DiasOferta":  0},
+      {"id": "c2", "name": "Calabaza", "Precio": 290, "PrecioOferta":  99, "DiasOferta":  3}
     ]},
-    {"id":  "Cli-02", "name": "Juca", "passw": "123Juca", "esPreferente": false, "compras": null}
+    {"id":  "Cli-02", "name": "Juca", "passw": "123Juca", "esPreferente": false, "tieneCompras": false}
   ]
 }
