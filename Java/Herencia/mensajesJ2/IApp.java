@@ -13,4 +13,5 @@ import DAM1.Herencia.mensajesJ2.usuarios.IUsuario;
 public interface IApp {
     void iniciar();
     IUsuario[] getUsuarios();
+    void volverAlAdmin();
 }

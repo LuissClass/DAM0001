@@ -1,62 +1,66 @@
 package DAM1.Herencia.mensajesJ2.usuarios;
 
-public class Admin extends Usuario implements  IAdmin{
+public class Admin extends Usuario {
 
-
-    @Override
-    public void verMsgEnviadosDeUser(int tlf) {
-
+    public Admin() {
+        super("El fukin admin", 777);
+        tipo = TipoUsuario.ADMIN;
     }
 
-    @Override
-    public void verMsgRecibidosDeUser(int tlf) {
+    public void menu() {
+        String res;
+        String vistaMenu = """
+                (1) Entrar en usuario\
+                
+                (2) Listar Usuarios\
+                
+                (3) Ver mensajes recibidos de tlf\
+                
+                (4) Ver mensajes enviados de tlf\
+                
+                (0) Salir""";
 
+        do {
+            System.out.println();
+            System.out.println(vistaMenu);
+            res = input.nextLine();
+            switch (res) {
+                case "1" -> entrarEnUser();
+                case "2" -> listarUsuaros();
+                case "3" -> verMsgRecibidosDeUser();
+                case "4" -> verMsgEnviadosDeUser();
+            }
+        } while (!res.equals("0"));
     }
 
-    @Override
-    public void listarUsuaros(Usuario[] us) {
-        for (int i = 0; i < us.length; i++) {
-            System.out.println(us[i]);
+    public void verMsgEnviadosDeUser() {
+        int tlf = Integer.parseInt(input.nextLine());
+
+        Usuario usu = buscarUsu(tlf);
+        usu.verMsgsEnviados();
+    }
+
+    public void verMsgRecibidosDeUser() {
+        int tlf = Integer.parseInt(input.nextLine());
+
+        Usuario usu = buscarUsu(tlf);
+        usu.verMsgsRecibidos();
+    }
+
+
+    public void listarUsuaros() {
+        Usuario[] usus = app.getUsuarios();
+
+        for (int i = 0; i < usus.length; i++) {
+            System.out.println(usus[i]);
         }
     }
 
-    @Override
-    public void elegirUsuario(Usuario[] us) {
-
+    public void entrarEnUser() {
     }
 
-    @Override
+
     public void crearUsuario() {
-
-    }
-
-    @Override
-    public void listarContactos() {
-
-    }
-
-    @Override
-    public void enviarMensaje() {
-
-    }
-
-    @Override
-    public void verMsgsEnviados() {
-
-    }
-
-    @Override
-    public void verMsgsRecibidos() {
-
-    }
-
-    @Override
-    public void entrar() {
-
-    }
-
-    @Override
-    public void salir() {
-
+        // TODO
     }
 }
