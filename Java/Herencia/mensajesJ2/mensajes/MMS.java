@@ -7,4 +7,13 @@ public class MMS extends  Mensaje{
     public MMS(String ruta) {
         this.ruta = ruta;
     }
+
+    @Override
+    public String toString() {
+        return "MMS {" +
+                "\n\tRemitente: " + tlfRemitente
+                +"\n\tDestinatario: " + tlfDestinatario
+                +"\n\tRuta: " + ruta
+                + "\n\t}";
+    }
 }

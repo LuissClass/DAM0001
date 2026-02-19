@@ -8,10 +8,8 @@ package DAM1.Herencia.mensajesJ2;
  * */
 
 
-import DAM1.Herencia.mensajesJ2.usuarios.IUsuario;
-
 public interface IApp {
     void iniciar();
-    IUsuario[] getUsuarios();
     void volverAlAdmin();
+    void crearUsuario(String name, int tlf);
 }

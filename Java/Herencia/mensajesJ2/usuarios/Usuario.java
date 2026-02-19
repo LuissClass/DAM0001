@@ -6,6 +6,7 @@ import DAM1.Herencia.mensajesJ2.mensajes.Mensaje;
 import DAM1.Herencia.mensajesJ2.mensajes.SMS;
 
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Usuario implements IUsuario{
     int telefono;
@@ -13,8 +14,8 @@ public class Usuario implements IUsuario{
     Usuario[] contactos;
     App app;
     TipoUsuario tipo;
-    Mensaje[] msgEnviados;
-    Mensaje[] msgRecibidos;
+    Vector<Mensaje> msgEnviados = new Vector<>();
+    Vector<Mensaje> msgRecibidos = new Vector<>();
 
     Scanner input = new Scanner(System.in);
 
@@ -26,6 +27,8 @@ public class Usuario implements IUsuario{
     public void menu() {
         String res;
         String vistaMenu = """
+                ===USUARIO:\s""" + name + """
+                === \
                 
                 (1) Enviar mensajes\
                 
@@ -48,7 +51,8 @@ public class Usuario implements IUsuario{
                 case "2" -> verMsgsRecibidos();
                 case "3" -> verMsgsEnviados();
                 case "4" -> verMsgsRecibidos();
-                case "5" -> verMsgsRecibidos();
+                case "5" -> System.out.println("[METODO NO EXISTE]");
+                case "0" -> salir();
             }
         } while (!res.equals("0"));
 
@@ -83,6 +87,7 @@ public class Usuario implements IUsuario{
     public void enviarMensaje() {
         String res;
         Mensaje msg;
+        System.out.println("Telf destino: ");
         int tlfDestino = Integer.parseInt(input.nextLine());
         Usuario usu = buscarUsu(tlfDestino);
 
@@ -91,23 +96,21 @@ public class Usuario implements IUsuario{
             res = input.nextLine();
 
             if (res.equals("1")) {
-                String txt = "";
-
                 System.out.println("Mensaje: ");
                 res = input.nextLine();
                 System.out.println("Mensaje: " + res);
                 msg = new SMS(res);
 
+                msgEnviados.add(msg);
                 usu.addMensaje(msg);
                 System.out.println("[ENVIADO]");
             } else if (res.equals("2")) {
-                String rutaImg = "";
-
                 System.out.println("Ruta imagen: ");
                 res = input.nextLine();
                 System.out.println("Ruta imagen: " + res);
                 msg = new MMS(res);
 
+                msgEnviados.add(msg);
                 usu.addMensaje(msg);
                 System.out.println("[ENVIADO]");
             }
@@ -118,31 +121,35 @@ public class Usuario implements IUsuario{
     @Override
     public void verMsgsEnviados() {
         String vista = "";
-        for(Mensaje m: msgEnviados) {
-            vista += m + "\n";
+
+        try {
+            for (Mensaje m : msgEnviados) {
+                vista += m + "\n";
+            }
+            System.out.println(vista);
+        } catch (NullPointerException npe) {
+            System.out.println(">>No hay mensajes enviados de " + telefono);
         }
-        System.out.println(vista);
     }
 
     @Override
     public void verMsgsRecibidos() {
         String vista = "";
-        for(Mensaje m: msgRecibidos) {
-            vista += m + "\n";
+
+        try {
+            for (Mensaje m : msgRecibidos) {
+                vista += m + "\n";
+            }
+            System.out.println(vista);
+        } catch (NullPointerException npe) {
+            System.out.println(">>No hay mensajes recibidos para " + telefono);
         }
-        System.out.println(vista);
+
     }
 
     @Override
     public void addMensaje(Mensaje msg) {
-        Mensaje[] copiaMsgsRecibidos = msgRecibidos.clone();
-        msgRecibidos = new Mensaje[msgRecibidos.length + 1];
-
-        for (int i = 0; i < msgRecibidos.length; i++) {
-            msgRecibidos[i] = copiaMsgsRecibidos[i];
-        }
-
-        msgRecibidos[msgRecibidos.length - 1] = msg;
+        msgRecibidos.add(msg);
     }
 
     @Override
@@ -152,16 +159,16 @@ public class Usuario implements IUsuario{
 
     @Override
     public void salir() {
-        if (tipo == TipoUsuario.ADMIN) {
-            app.iniciar();
-        } else if (tipo == TipoUsuario.NORMAL) {
-            // TODO FINALIZAR PROGRAMA
+        if (tipo == TipoUsuario.NORMAL) {
+            app.volverAlAdmin();
+        } else if (tipo == TipoUsuario.ADMIN) {
+            System.out.println(">>Finalizando");
         }
     }
 
     @Override
     public String toString() {
-        return "Nombre: " + name + " Tlf: " + telefono;
+        return "Nombre: " + name + " | Tlf: " + telefono;
     }
 
     public int getTelefono() {
