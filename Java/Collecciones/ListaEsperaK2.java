@@ -60,7 +60,7 @@ class Cola <T>{
     }
 
     T remove() {
-        return cola.pop();
+        return cola.remove(0);
     }
 
     boolean isEmpty() {
@@ -95,7 +95,6 @@ class ColaPrioridad <T> {
                 break;
             }
         }
-
 
         if (obj != null) {
             System.out.println("El siguiente en ser atendido es " + obj);
