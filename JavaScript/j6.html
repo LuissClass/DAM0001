@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>j6 — Aprende Expresiones Regulares con Minijuegos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+    background: #0a0a0f;
+    color: #fff;
+    font-family: system-ui, sans-serif;
+  }
+  h1, h2 {
+    text-align: center;
+  }
+  #container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #111;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+  }
+  .game {
+    margin: 25px 0;
+    padding: 15px;
+    background: #1a1a1f;
+    border-radius: 10px;
+  }
+  input, button, select {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    margin: 5px 0;
+  }
+  button {
+    cursor: pointer;
+    background: #ffb347;
+    color: #000;
+    font-weight: bold;
+  }
+  #fallingArea {
+    position: relative;
+    height: 250px;
+    background: #222;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+  .falling {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffdd99;
+    color: #000;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎓 Aprende Expresiones Regulares con Minijuegos</h1>
+
+<div id="container">
+
+  <!-- MINI JUEGO 1 -->
+  <div class="game">
+    <h2>🎯 Minijuego 1: ¿Coincide o no coincide?</h2>
+    <p>Escribe una expresión regular y un texto. El juego te dirá si coincide.</p>
+
+    <label>Expresión regular:</label><br>
+    <input id="regex1" placeholder="Ej: ^[a-z]+$"><br>
+
+    <label>Texto a probar:</label><br>
+    <input id="text1" placeholder="Ej: hola"><br>
+
+    <button onclick="testRegex()">Probar</button>
+
+    <p id="result1"></p>
+  </div>
+
+  <!-- MINI JUEGO 2 -->
+  <div class="game">
+    <h2>🧩 Minijuego 2: Completa la expresión regular</h2>
+    <p>Elige la regex correcta para validar un email.</p>
+
+    <select id="regexSelect">
+      <option value="0">Selecciona una opción</option>
+      <option value="1">^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$</option>
+      <option value="2">^[0-9]+$</option>
+      <option value="3">^.{50,}$</option>
+    </select>
+
+    <button onclick="checkRegexQuiz()">Comprobar</button>
+
+    <p id="result2"></p>
+  </div>
+
+  <!-- MINI JUEGO 3 -->
+  <div class="game">
+    <h2>⚡ Minijuego 3: Caza los textos válidos</h2>
+    <p>Haz clic solo en los textos que sean <strong>números enteros</strong> (regex: <code>^[0-9]+$</code>).</p>
+
+    <button onclick="startFallingGame()">Iniciar</button>
+
+    <div id="fallingArea"></div>
+
+    <p>Puntuación: <span id="score3">0</span></p>
+  </div>
+
+</div>
+
+<script>
+// ------------------------------
+// MINIJUEGO 1
+// ------------------------------
+function testRegex() {
+  const pattern = document.getElementById("regex1").value;
+  const text = document.getElementById("text1").value;
+  const result = document.getElementById("result1");
+
+  try {
+    const regex = new RegExp(pattern);
+    if (regex.test(text)) {
+      result.textContent = "✔ Coincide";
+      result.style.color = "lightgreen";
+    } else {
+      result.textContent = "✘ No coincide";
+      result.style.color = "red";
+    }
+  } catch (e) {
+    result.textContent = "❌ Error en la expresión regular";
+    result.style.color = "orange";
+  }
+}
+
+// ------------------------------
+// MINIJUEGO 2
+// ------------------------------
+function checkRegexQuiz() {
+  const value = document.getElementById("regexSelect").value;
+  const result = document.getElementById("result2");
+
+  if (value === "1") {
+    result.textContent = "✔ Correcto, esa es la regex de email";
+    result.style.color = "lightgreen";
+  } else if (value === "0") {
+    result.textContent = "Selecciona una opción";
+    result.style.color = "orange";
+  } else {
+    result.textContent = "✘ Incorrecto";
+    result.style.color = "red";
+  }
+}
+
+// ------------------------------
+// MINIJUEGO 3
+// ------------------------------
+let score = 0;
+let fallingInterval;
+
+function startFallingGame() {
+  const area = document.getElementById("fallingArea");
+  area.innerHTML = "";
+  score = 0;
+  document.getElementById("score3").textContent = score;
+
+  clearInterval(fallingInterval);
+
+  fallingInterval = setInterval(() => {
+    spawnFallingText();
+  }, 900);
+}
+
+function spawnFallingText() {
+  const area = document.getElementById("fallingArea");
+
+  const texts = [
+    "123", "hola", "9999", "abc", "42", "perro", "777", "gato", "0", "x9"
+  ];
+
+  const txt = texts[Math.floor(Math.random() * texts.length)];
+
+  const div = document.createElement("div");
+  div.className = "falling";
+  div.textContent = txt;
+  div.style.top = "-20px";
+  div.style.left = Math.random() * 80 + "%";
+
+  area.appendChild(div);
+
+  div.addEventListener("click", () => {
+    const regex = /^[0-9]+$/;
+    if (regex.test(txt)) {
+      score++;
+      document.getElementById("score3").textContent = score;
+      div.remove();
+    } else {
+      score--;
+      document.getElementById("score3").textContent = score;
+      div.remove();
+    }
+  });
+
+  let y = -20;
+  const fall = setInterval(() => {
+    y += 3;
+    div.style.top = y + "px";
+
+    if (y > 260) {
+      div.remove();
+      clearInterval(fall);
+    }
+  }, 50);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1153 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Compraventa de Perros Voladores</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-soft: #0b1020;
+      --accent: #ffb347;
+      --accent-soft: #ffdd99;
+      --text: #f5f5f5;
+      --muted: #a0a4c0;
+      --danger: #ff6b6b;
+      --success: #4cd964;
+      --card: #151a2b;
+      --border: #262b3f;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.45);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.25s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1b2340 0, #050816 45%, #02010a 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Layout */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(5, 8, 22, 0.96), rgba(5, 8, 22, 0.7), transparent);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 18px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #ffe8b5, #ffb347 40%, #ff7b7b 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 25px rgba(255, 179, 71, 0.55);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logo-icon::before {
+      content: "🐶";
+      font-size: 22px;
+      transform: translateY(1px);
+    }
+
+    .logo-icon::after {
+      content: "🪽";
+      position: absolute;
+      right: -4px;
+      top: 4px;
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .logo-text-main {
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      font-size: 1.05rem;
+    }
+
+    .logo-text-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-pill {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      background: rgba(21, 26, 43, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .nav-pill span {
+      font-size: 0.9rem;
+    }
+
+    .nav-btn {
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 7px 16px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ffb347, #ff7b7b);
+      color: #1b1020;
+      box-shadow: 0 10px 25px rgba(255, 179, 71, 0.45);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 14px 30px rgba(255, 179, 71, 0.6);
+    }
+
+    .nav-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(255, 179, 71, 0.4);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 18px 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 22px;
+    }
+
+    @media (max-width: 880px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      header {
+        position: static;
+      }
+    }
+
+    /* Hero / left column */
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .hero-badge {
+      align-self: flex-start;
+      padding: 5px 11px;
+      border-radius: var(--radius-pill);
+      background: rgba(21, 26, 43, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.75rem;
+      color: var(--accent-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px rgba(76, 217, 100, 0.8);
+    }
+
+    .hero-title {
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #ffb347, #ffdd99);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 520px;
+    }
+
+    .hero-subtitle strong {
+      color: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .stat-pill {
+      padding: 7px 11px;
+      border-radius: var(--radius-pill);
+      background: rgba(10, 14, 30, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-pill strong {
+      color: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .hero-divider {
+      height: 1px;
+      width: 100%;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
+      margin: 6px 0 4px;
+    }
+
+    /* Filters */
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .filter-select,
+    .filter-range {
+      background: rgba(10, 14, 30, 0.9);
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .filter-select select {
+      background: transparent;
+      border: none;
+      color: var(--accent-soft);
+      font-size: 0.78rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .filter-range input[type="range"] {
+      width: 110px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .filter-range span {
+      color: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    /* Cards */
+
+    .cards {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(255, 179, 71, 0.12), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(111, 66, 193, 0.18), transparent 55%),
+                  var(--card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 12px 12px 11px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform var(--transition-med), box-shadow var(--transition-med), border-color var(--transition-med), background var(--transition-med);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+      border-color: rgba(255, 179, 71, 0.6);
+      background: radial-gradient(circle at top left, rgba(255, 179, 71, 0.18), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(111, 66, 193, 0.24), transparent 55%),
+                  #181d33;
+    }
+
+    .card-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: rgba(5, 8, 22, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--accent-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #ffe8b5, #ffb347 40%, #ff7b7b 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-avatar::after {
+      content: "🪽";
+      position: absolute;
+      right: -3px;
+      top: 4px;
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .card-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+    }
+
+    .card-subtitle {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .card-body {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .card-body strong {
+      color: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .price {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent-soft);
+    }
+
+    .price span {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .card-cta {
+      font-size: 0.75rem;
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      border: none;
+      cursor: pointer;
+      background: rgba(255, 179, 71, 0.12);
+      color: var(--accent-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .card-cta:hover {
+      background: rgba(255, 179, 71, 0.22);
+      transform: translateY(-1px);
+    }
+
+    /* Right column: form / details */
+
+    .panel {
+      background: radial-gradient(circle at top, rgba(255, 179, 71, 0.12), transparent 55%),
+                  var(--bg-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 14px 14px 13px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: sticky;
+      top: 70px;
+    }
+
+    @media (max-width: 880px) {
+      .panel {
+        position: static;
+      }
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+    }
+
+    .panel-subtitle {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .panel-chip {
+      font-size: 0.72rem;
+      padding: 4px 9px;
+      border-radius: var(--radius-pill);
+      background: rgba(10, 14, 30, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--accent-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .panel-chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(255, 179, 71, 0.9);
+    }
+
+    .panel-divider {
+      height: 1px;
+      width: 100%;
+      background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
+    }
+
+    .panel-section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .field-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .field-label span {
+      color: var(--accent-soft);
+      font-weight: 500;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+      background: rgba(10, 14, 30, 0.9);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 7px 9px;
+      font-size: 0.8rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+
+    .field-input:focus,
+    .field-select:focus,
+    .field-textarea:focus {
+      border-color: rgba(255, 179, 71, 0.8);
+      box-shadow: 0 0 0 1px rgba(255, 179, 71, 0.4);
+      background: rgba(10, 14, 30, 1);
+    }
+
+    .field-textarea {
+      resize: vertical;
+      min-height: 60px;
+      max-height: 120px;
+    }
+
+    .field-helper {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .field-inline {
+      display: flex;
+      gap: 8px;
+    }
+
+    .field-inline > * {
+      flex: 1;
+    }
+
+    .panel-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .summary {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .summary strong {
+      color: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .primary-btn {
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ffb347, #ff7b7b);
+      color: #1b1020;
+      box-shadow: 0 12px 28px rgba(255, 179, 71, 0.5);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 16px 34px rgba(255, 179, 71, 0.65);
+    }
+
+    .primary-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 7px 18px rgba(255, 179, 71, 0.45);
+    }
+
+    .secondary-btn {
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      background: rgba(10, 14, 30, 0.9);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .secondary-btn:hover {
+      background: rgba(18, 24, 46, 0.95);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--accent-soft);
+    }
+
+    .status {
+      font-size: 0.76rem;
+      padding: 6px 9px;
+      border-radius: var(--radius-md);
+      background: rgba(10, 14, 30, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-icon {
+      font-size: 1rem;
+    }
+
+    .status-success {
+      border-color: rgba(76, 217, 100, 0.6);
+      color: var(--success);
+    }
+
+    .status-error {
+      border-color: rgba(255, 107, 107, 0.7);
+      color: var(--danger);
+    }
+
+    footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 18px 18px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    footer span strong {
+      color: var(--accent-soft);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <div>
+          <div class="logo-text-main">SkyPaws Market</div>
+          <div class="logo-text-sub">Compraventa de perros voladores</div>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <div class="nav-pill">
+          <span>✨</span>
+          <span>Garantía anti-caídas incluida</span>
+        </div>
+        <button class="nav-btn" id="scrollToForm">
+          Reservar ahora
+          <span>🪽</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Left column -->
+    <section class="hero">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Perros con alas listos para despegar
+      </div>
+
+      <h1 class="hero-title">
+        Encuentra tu <span>perro volador</span> ideal y conquista el cielo juntos.
+      </h1>
+
+      <p class="hero-subtitle">
+        Elige entre razas entrenadas para <strong>vuelo recreativo</strong>, <strong>mensajería aérea</strong> o simplemente
+        para dar el paseo más épico del parque.
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat-pill">
+          <strong>+120</strong> perros voladores certificados
+        </div>
+        <div class="stat-pill">
+          <strong>24/7</strong> soporte de entrenadores celestiales
+        </div>
+        <div class="stat-pill">
+          <strong>0</strong> turbulencias reportadas este mes
+        </div>
+      </div>
+
+      <div class="hero-divider"></div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <div class="filter-select">
+          <span>Modo de vuelo:</span>
+          <select id="filterMode">
+            <option value="todos">Todos</option>
+            <option value="recreativo">Recreativo</option>
+            <option value="mensajeria">Mensajería</option>
+            <option value="acrobatico">Acrobático</option>
+          </select>
+        </div>
+
+        <div class="filter-select">
+          <span>Tamaño:</span>
+          <select id="filterSize">
+            <option value="todos">Todos</option>
+            <option value="pequeño">Pequeño</option>
+            <option value="mediano">Mediano</option>
+            <option value="grande">Grande</option>
+          </select>
+        </div>
+
+        <div class="filter-range">
+          <span id="priceLabel">Hasta 6.000€</span>
+          <input type="range" id="filterPrice" min="2000" max="10000" step="500" value="6000" />
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="cards" id="dogCards">
+        <!-- Cards generadas por JS -->
+      </div>
+    </section>
+
+    <!-- Right column -->
+    <aside class="panel" id="formPanel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Reserva tu perro volador</div>
+          <div class="panel-subtitle" id="selectedDogLabel">
+            Selecciona un perro de la lista para ver los detalles.
+          </div>
+        </div>
+        <div class="panel-chip">
+          <div class="panel-chip-dot"></div>
+          Vuelo certificado
+        </div>
+      </div>
+
+      <div class="panel-divider"></div>
+
+      <div class="panel-section-title">Datos del vuelo</div>
+
+      <form class="form" id="bookingForm">
+        <div class="field">
+          <label class="field-label">
+            <span>Nombre completo</span>
+          </label>
+          <input type="text" class="field-input" id="name" placeholder="Tu nombre y apellidos" required />
+        </div>
+
+        <div class="field">
+          <label class="field-label">
+            <span>Correo electrónico</span>
+          </label>
+          <input type="email" class="field-input" id="email" placeholder="tucorreo@ejemplo.com" required />
+        </div>
+
+        <div class="field field-inline">
+          <div>
+            <label class="field-label">
+              <span>Ciudad de despegue</span>
+            </label>
+            <input type="text" class="field-input" id="city" placeholder="Madrid, Barcelona..." required />
+          </div>
+          <div>
+            <label class="field-label">
+              <span>Fecha deseada</span>
+            </label>
+            <input type="date" class="field-input" id="date" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">
+            <span>Tipo de uso</span>
+          </label>
+          <select class="field-select" id="usage">
+            <option value="paseo">Paseos aéreos</option>
+            <option value="mensajeria">Mensajería aérea</option>
+            <option value="acrobacias">Acrobacias y exhibiciones</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field-label">
+            <span>Notas adicionales</span>
+            <small class="field-helper">Opcional</small>
+          </label>
+          <textarea class="field-textarea" id="notes" placeholder="Cuéntanos si tienes alguna preferencia especial."></textarea>
+        </div>
+      </form>
+
+      <div class="panel-divider"></div>
+
+      <div class="panel-section-title">Resumen</div>
+
+      <div class="panel-footer">
+        <div class="summary" id="summaryText">
+          No has seleccionado ningún perro todavía. Elige uno para ver el precio estimado del vuelo.
+        </div>
+
+        <button class="primary-btn" id="submitBtn">
+          Confirmar reserva
+          <span>🚀</span>
+        </button>
+
+        <button class="secondary-btn" id="clearBtn">
+          Limpiar formulario
+          <span>🧹</span>
+        </button>
+
+        <div class="status" id="statusBox">
+          <span class="status-icon" id="statusIcon">ℹ️</span>
+          <span id="statusMessage">Mensaje de estado.</span>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <span>© <strong>SkyPaws Market</strong> — Perros voladores felices, humanos aún más.</span>
+    <span>Todos los vuelos incluyen chaleco anticaídas y galletas en cabina.</span>
+  </footer>
+
+  <script>
+    // Datos de ejemplo de perros voladores
+    const dogs = [
+      {
+        id: 1,
+        name: "Nimbus",
+        mode: "recreativo",
+        size: "mediano",
+        price: 4500,
+        tag: "Más adoptado",
+        description: "Perfecto para paseos suaves al atardecer. Alas de pluma suave y carácter extremadamente cariñoso.",
+        speed: "30 km/h",
+        autonomy: "45 min",
+      },
+      {
+        id: 2,
+        name: "Stratus",
+        mode: "mensajeria",
+        size: "pequeño",
+        price: 3200,
+        tag: "Mensajero experto",
+        description: "Especialista en mensajería aérea urbana. Ideal para entregar notas, flores o pequeños paquetes.",
+        speed: "40 km/h",
+        autonomy: "35 min",
+      },
+      {
+        id: 3,
+        name: "Tempest",
+        mode: "acrobatico",
+        size: "grande",
+        price: 7800,
+        tag: "Acrobacias pro",
+        description: "Entrenado para acrobacias y exhibiciones. Vuelo potente, giros cerrados y presencia imponente.",
+        speed: "60 km/h",
+        autonomy: "50 min",
+      },
+      {
+        id: 4,
+        name: "Cirrus",
+        mode: "recreativo",
+        size: "pequeño",
+        price: 2600,
+        tag: "Ideal principiantes",
+        description: "Muy estable en el aire, perfecto para quienes se inician en el mundo de los perros voladores.",
+        speed: "25 km/h",
+        autonomy: "40 min",
+      },
+      {
+        id: 5,
+        name: "Aurora",
+        mode: "mensajeria",
+        size: "mediano",
+        price: 6100,
+        tag: "Vuelo nocturno",
+        description: "Alas con brillo suave para vuelos nocturnos. Ideal para mensajes románticos bajo las estrellas.",
+        speed: "35 km/h",
+        autonomy: "55 min",
+      },
+      {
+        id: 6,
+        name: "Cometa",
+        mode: "acrobatico",
+        size: "mediano",
+        price: 9200,
+        tag: "Edición limitada",
+        description: "Velocidad extrema y maniobras espectaculares. Recomendado solo para pilotos con experiencia.",
+        speed: "75 km/h",
+        autonomy: "40 min",
+      },
+    ];
+
+    const dogCardsContainer = document.getElementById("dogCards");
+    const filterMode = document.getElementById("filterMode");
+    const filterSize = document.getElementById("filterSize");
+    const filterPrice = document.getElementById("filterPrice");
+    const priceLabel = document.getElementById("priceLabel");
+
+    const selectedDogLabel = document.getElementById("selectedDogLabel");
+    const summaryText = document.getElementById("summaryText");
+    const bookingForm = document.getElementById("bookingForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const statusBox = document.getElementById("statusBox");
+    const statusIcon = document.getElementById("statusIcon");
+    const statusMessage = document.getElementById("statusMessage");
+    const scrollToFormBtn = document.getElementById("scrollToForm");
+    const formPanel = document.getElementById("formPanel");
+
+    let selectedDog = null;
+
+    function formatPrice(value) {
+      return value.toLocaleString("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+    }
+
+    function updatePriceLabel() {
+      priceLabel.textContent = `Hasta ${formatPrice(Number(filterPrice.value))}`;
+    }
+
+    function renderDogs() {
+      dogCardsContainer.innerHTML = "";
+      const maxPrice = Number(filterPrice.value);
+      const mode = filterMode.value;
+      const size = filterSize.value;
+
+      const filtered = dogs.filter((dog) => {
+        const modeOk = mode === "todos" || dog.mode === mode;
+        const sizeOk = size === "todos" || dog.size === size;
+        const priceOk = dog.price <= maxPrice;
+        return modeOk && sizeOk && priceOk;
+      });
+
+      if (filtered.length === 0) {
+        dogCardsContainer.innerHTML =
+          '<p style="font-size:0.8rem;color:#a0a4c0;">No hay perros que coincidan con los filtros seleccionados. Prueba ampliando el presupuesto o cambiando el modo de vuelo.</p>';
+        return;
+      }
+
+      filtered.forEach((dog) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.dataset.id = dog.id;
+
+        card.innerHTML = `
+          <div class="card-tag">
+            <span>🪽</span>
+            <span>${dog.tag}</span>
+          </div>
+          <div class="card-header">
+            <div class="card-avatar">🐶</div>
+            <div>
+              <div class="card-title">${dog.name}</div>
+              <div class="card-subtitle">
+                ${dog.mode.charAt(0).toUpperCase() + dog.mode.slice(1)} · ${dog.size}
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            ${dog.description}
+            <br />
+            <strong>Velocidad:</strong> ${dog.speed} · <strong>Autonomía:</strong> ${dog.autonomy}
+          </div>
+          <div class="card-footer">
+            <div class="price">
+              ${formatPrice(dog.price)}
+              <span>/ vuelo</span>
+            </div>
+            <button class="card-cta" type="button">
+              Elegir
+              <span>➜</span>
+            </button>
+          </div>
+        `;
+
+        card.addEventListener("click", () => selectDog(dog.id));
+        dogCardsContainer.appendChild(card);
+      });
+    }
+
+    function selectDog(id) {
+      selectedDog = dogs.find((d) => d.id === id);
+      if (!selectedDog) return;
+
+      // Marcar visualmente la tarjeta seleccionada
+      document.querySelectorAll(".card").forEach((card) => {
+        card.style.outline = "none";
+        card.style.outlineOffset = "0";
+      });
+      const selectedCard = document.querySelector(`.card[data-id="${id}"]`);
+      if (selectedCard) {
+        selectedCard.style.outline = "2px solid rgba(255, 179, 71, 0.9)";
+        selectedCard.style.outlineOffset = "2px";
+      }
+
+      selectedDogLabel.textContent = `Has seleccionado a ${selectedDog.name} (${selectedDog.mode}, ${selectedDog.size}).`;
+      summaryText.innerHTML = `
+        Estás a punto de reservar un vuelo con <strong>${selectedDog.name}</strong> por 
+        <strong>${formatPrice(selectedDog.price)}</strong> por sesión.
+        Completa tus datos y confirma la reserva.
+      `;
+    }
+
+    function showStatus(message, type = "info") {
+      statusBox.style.display = "flex";
+      statusBox.classList.remove("status-success", "status-error");
+      if (type === "success") {
+        statusBox.classList.add("status-success");
+        statusIcon.textContent = "✅";
+      } else if (type === "error") {
+        statusBox.classList.add("status-error");
+        statusIcon.textContent = "⚠️";
+      } else {
+        statusIcon.textContent = "ℹ️";
+      }
+      statusMessage.textContent = message;
+
+      clearTimeout(showStatus._timeout);
+      showStatus._timeout = setTimeout(() => {
+        statusBox.style.display = "none";
+      }, 5500);
+    }
+
+    function validateForm() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const date = document.getElementById("date").value;
+
+      if (!selectedDog) {
+        showStatus("Primero selecciona un perro volador de la lista.", "error");
+        return false;
+      }
+      if (!name || !email || !city || !date) {
+        showStatus("Por favor, completa todos los campos obligatorios.", "error");
+        return false;
+      }
+      if (!email.includes("@") || !email.includes(".")) {
+        showStatus("Introduce un correo electrónico válido.", "error");
+        return false;
+      }
+      return true;
+    }
+
+    submitBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (!validateForm()) return;
+
+      const name = document.getElementById("name").value.trim();
+      const city = document.getElementById("city").value.trim();
+      const date = document.getElementById("date").value;
+      const usage = document.getElementById("usage").value;
+
+      showStatus(
+        `Reserva enviada. ${name}, te contactaremos para confirmar tu vuelo con ${selectedDog.name} desde ${city} el ${date}. Uso: ${usage}.`,
+        "success"
+      );
+
+      bookingForm.reset();
+      selectedDog = null;
+      selectedDogLabel.textContent = "Selecciona un perro de la lista para ver los detalles.";
+      summaryText.textContent =
+        "No has seleccionado ningún perro todavía. Elige uno para ver el precio estimado del vuelo.";
+      document.querySelectorAll(".card").forEach((card) => {
+        card.style.outline = "none";
+        card.style.outlineOffset = "0";
+      });
+    });
+
+    clearBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      bookingForm.reset();
+      showStatus("Formulario limpiado. Puedes volver a empezar cuando quieras.");
+    });
+
+    filterMode.addEventListener("change", renderDogs);
+    filterSize.addEventListener("change", renderDogs);
+    filterPrice.addEventListener("input", () => {
+      updatePriceLabel();
+      renderDogs();
+    });
+
+    scrollToFormBtn.addEventListener("click", () => {
+      formPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    // Inicialización
+    updatePriceLabel();
+    renderDogs();
+  </script>
+</body>
+</html>

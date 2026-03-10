@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscaminas JS - Un solo archivo</title>
+    <style>
+        /* CSS: El diseño del juego */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        .tablero {
+            display: grid;
+            grid-template-columns: repeat(10, 35px);
+            grid-template-rows: repeat(10, 35px);
+            gap: 2px;
+            background-color: #7f8c8d;
+            padding: 10px;
+            border: 5px solid #34495e;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .celda {
+            width: 35px;
+            height: 35px;
+            background-color: #bdc3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #2c3e50;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .celda:hover {
+            background-color: #ecf0f1;
+        }
+
+        .celda.revelada {
+            background-color: #ecf0f1;
+            cursor: default;
+        }
+
+        .celda.mina {
+            background-color: #e74c3c;
+        }
+
+        .celda.marcada {
+            background-color: #f1c40f;
+        }
+
+        #status {
+            margin: 20px;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        button {
+            padding: 10px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Buscaminas</h1>
+    <div id="status">¡Cuidado con las bombas!</div>
+    <div id="tablero" class="tablero"></div>
+    <br>
+    <button onclick="iniciarJuego()">Reiniciar Juego</button>
+
+    <script>
+        /* JS: La lógica del juego */
+        const filas = 10;
+        const columnas = 10;
+        const totalMinas = 12;
+        let tableroLogico = [];
+        let juegoTerminado = false;
+
+        const contenedorTablero = document.getElementById('tablero');
+        const textoStatus = document.getElementById('status');
+
+        function iniciarJuego() {
+            juegoTerminado = false;
+            tableroLogico = [];
+            contenedorTablero.innerHTML = '';
+            textoStatus.textContent = "¡Cuidado con las bombas!";
+            textoStatus.style.color = "white";
+
+            // 1. Crear matriz vacía
+            for (let f = 0; f < filas; f++) {
+                tableroLogico[f] = [];
+                for (let c = 0; c < columnas; c++) {
+                    tableroLogico[f][c] = {
+                        esMina: false,
+                        revelada: false,
+                        marcada: false,
+                        minasCerca: 0
+                    };
+                }
+            }
+
+            // 2. Colocar minas aleatorias
+            let minasPuestas = 0;
+            while (minasPuestas < totalMinas) {
+                let f = Math.floor(Math.random() * filas);
+                let c = Math.floor(Math.random() * columnas);
+                if (!tableroLogico[f][c].esMina) {
+                    tableroLogico[f][c].esMina = true;
+                    minasPuestas++;
+                }
+            }
+
+            // 3. Dibujar el tablero en el HTML
+            for (let f = 0; f < filas; f++) {
+                for (let c = 0; c < columnas; c++) {
+                    const divCelda = document.createElement('div');
+                    divCelda.classList.add('celda');
+                    divCelda.id = `celda-${f}-${c}`;
+                    
+                    // Click izquierdo: Revelar
+                    divCelda.addEventListener('click', () => clicIzquierdo(f, c));
+                    
+                    // Click derecho: Marcar
+                    divCelda.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        marcarCelda(f, c);
+                    });
+
+                    contenedorTablero.appendChild(divCelda);
+                }
+            }
+        }
+
+        function clicIzquierdo(f, c) {
+            if (juegoTerminado || tableroLogico[f][c].revelada || tableroLogico[f][c].marcada) return;
+
+            const celda = tableroLogico[f][c];
+            const div = document.getElementById(`celda-${f}-${c}`);
+
+            if (celda.esMina) {
+                gameOver(false);
+            } else {
+                revelarCelda(f, c);
+                verificarVictoria();
+            }
+        }
+
+        function marcarCelda(f, c) {
+            if (juegoTerminado || tableroLogico[f][c].revelada) return;
+            const celda = tableroLogico[f][c];
+            const div = document.getElementById(`celda-${f}-${c}`);
+
+            celda.marcada = !celda.marcada;
+            div.classList.toggle('marcada');
+            div.textContent = celda.marcada ? '🚩' : '';
+        }
+
+        function revelarCelda(f, c) {
+            // Validar límites
+            if (f < 0 || f >= filas || c < 0 || c >= columnas) return;
+            
+            const celda = tableroLogico[f][c];
+            if (celda.revelada || celda.esMina) return;
+
+            celda.revelada = true;
+            const div = document.getElementById(`celda-${f}-${c}`);
+            div.classList.add('revelada');
+
+            const nMinas = contarMinasCerca(f, c);
+            if (nMinas > 0) {
+                div.textContent = nMinas;
+                div.style.color = obtenerColorNumero(nMinas);
+            } else {
+                // Si es cero, revelamos las de alrededor (recursión)
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        revelarCelda(f + i, c + j);
+                    }
+                }
+            }
+        }
+
+        function contarMinasCerca(f, c) {
+            let n = 0;
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (tableroLogico[f + i] && tableroLogico[f + i][c + j]?.esMina) {
+                        n++;
+                    }
+                }
+            }
+            return n;
+        }
+
+        function obtenerColorNumero(n) {
+            const colores = ["", "blue", "green", "red", "darkblue", "brown", "cyan", "black", "gray"];
+            return colores[n];
+        }
+
+        function verificarVictoria() {
+            let celdasOcultas = 0;
+            for (let f = 0; f < filas; f++) {
+                for (let c = 0; c < columnas; c++) {
+                    if (!tableroLogico[f][c].revelada && !tableroLogico[f][c].esMina) {
+                        celdasOcultas++;
+                    }
+                }
+            }
+            if (celdasOcultas === 0) gameOver(true);
+        }
+
+        function gameOver(victoria) {
+            juegoTerminado = true;
+            textoStatus.textContent = victoria ? "¡GANASTE! 🏆" : "¡BOOM! Perdiste 💣";
+            textoStatus.style.color = victoria ? "#2ecc71" : "#e74c3c";
+
+            // Mostrar todas las minas
+            for (let f = 0; f < filas; f++) {
+                for (let c = 0; c < columnas; c++) {
+                    if (tableroLogico[f][c].esMina) {
+                        const div = document.getElementById(`celda-${f}-${c}`);
+                        div.classList.add('mina');
+                        div.textContent = '💣';
+                    }
+                }
+            }
+        }
+
+        // Arrancar el juego al cargar la página
+        iniciarJuego();
+    </script>
+</body>
+</html>

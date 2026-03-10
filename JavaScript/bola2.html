@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Letras Rebotando</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .bola {
+            position: absolute;
+            font-size: 40px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bola" id="bola1">HOLA</div>
+    <div class="bola" id="bola2">HOLA</div>
+    <script>
+        // Creamos una lista de objetos. Cada uno tiene su elemento HTML, su posición y su velocidad.
+        const bolas = [
+            { el: document.getElementById('bola1'), x: 0, y: 0, vx: 50, vy: 50, count: 0 },
+            { el: document.getElementById('bola2'), x: 100, y: 100, vx: 5, vy: 7, count: 0 }
+        ];
+
+        function mover() {
+            for (let b of bolas) {
+                // 1. Actualizar texto (Efecto parpadeo)
+                b.count++;
+                if (b.count > 10) {
+                    b.el.innerHTML = "BOLA";
+                    if (b.count > 20) b.count = 0; // Reiniciamos ciclo
+                } else {
+                    b.el.innerHTML = "ALOH";
+                }
+
+                // 2. Actualizar posición individual
+                b.x += b.vx;
+                b.y += b.vy;
+
+                // 3. Rebotes
+                if (b.x + b.el.offsetWidth >= window.innerWidth || b.x <= 0) b.vx *= -1;
+                if (b.y + b.el.offsetHeight >= window.innerHeight || b.y <= 0) b.vy *= -1;
+
+                // Colisiones entre bolas
+                resolverColisiones(bolas);
+
+                // 4. Aplicar al estilo
+                b.el.style.left = b.x + 'px';
+                b.el.style.top = b.y + 'px';
+            }
+            requestAnimationFrame(mover);
+        }
+
+        function resolverColisiones(listaBolas) {
+            for (let i = 0; i < listaBolas.length; i++) {
+                for (let j = i + 1; j < listaBolas.length; j++) {
+                    const b1 = listaBolas[i];
+                    const b2 = listaBolas[j];
+
+                    // Usamos las propiedades que ya tenemos (x, y, ancho, alto)
+                    // en lugar de getBoundingClientRect para evitar saltos de coordenadas
+                    const r1 = {
+                        izq: b1.x,
+                        der: b1.x + b1.el.offsetWidth,
+                        sup: b1.y,
+                        inf: b1.y + b1.el.offsetHeight
+                    };
+
+                    const r2 = {
+                        izq: b2.x,
+                        der: b2.x + b2.el.offsetWidth,
+                        sup: b2.y,
+                        inf: b2.y + b2.el.offsetHeight
+                    };
+
+                    const colision = !(r1.der < r2.izq ||
+                        r1.izq > r2.der ||
+                        r1.inf < r2.sup ||
+                        r1.sup > r2.inf);
+
+                    if (colision) {
+                        // 1. Invertir velocidades (Rebote)
+                        [b1.vx, b2.vx] = [b2.vx, b1.vx];
+                        [b1.vy, b2.vy] = [b2.vy, b1.vy];
+
+                        // 2. SEPARACIÓN INMEDIATA
+                        // En lugar de cálculos raros, las movemos un frame hacia atrás 
+                        // para que dejen de tocarse YA.
+                        b1.x += b1.vx;
+                        b1.y += b1.vy;
+                        b2.x += b2.vx;
+                        b2.y += b2.vy;
+
+                        // Si aún así se quedan pegadas, un empujón extra de seguridad
+                        b1.x += b1.vx > 0 ? 2 : -2;
+                        b2.x += b2.vx > 0 ? 2 : -2;
+                    }
+                }
+            }
+        }
+
+        mover();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>j5 — CSS Edition: Perros vs Gatos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+    background: #0a0a0f;
+    color: #fff;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+  
+  /* El "tablero" de juego */
+  #gameContainer {
+    position: relative;
+    width: 900px;
+    height: 500px;
+    background: linear-gradient(to bottom, #1b2340, #050816);
+    margin: 0 auto;
+    overflow: hidden;
+    border: 2px solid #333;
+  }
+
+  #hud {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.2rem;
+    background: rgba(0,0,0,0.6);
+    padding: 10px 15px;
+    border-radius: 8px;
+    z-index: 100;
+  }
+
+  /* Estilo base para todas las entidades */
+  .entity {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Para que no interfieran con clics */
+    will-change: transform; /* Optimización de rendimiento */
+  }
+
+  #player {
+    width: 50px;
+    height: 50px;
+    background: #ffdd99;
+    border-radius: 8px;
+    font-size: 30px;
+  }
+
+  .bullet {
+    width: 15px;
+    height: 4px;
+    background: #fff;
+    box-shadow: 0 0 8px #fff;
+    border-radius: 2px;
+  }
+
+  .enemy {
+    width: 50px;
+    height: 50px;
+    background: #ff6666;
+    border-radius: 8px;
+    font-size: 30px;
+  }
+
+  .fireball {
+    width: 16px;
+    height: 16px;
+    background: #ff3300;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ff3300;
+  }
+
+  #startScreen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 200;
+  }
+
+  #startScreen button {
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #ffb347;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameContainer">
+  <div id="hud">Puntos: <span id="score">0</span> | Vidas: <span id="lives">3</span></div>
+  <div id="player" class="entity">🐶</div>
+</div>
+
+<div id="startScreen">
+  <h1>🐶🪽 Perros vs Gatos 🔥</h1>
+  <p>Mantén ESPACIO para disparar la ráfaga.</p>
+  <button onclick="startGame()">Comenzar</button>
+</div>
+
+<script>
+// --- CONFIGURACIÓN ---
+const container = document.getElementById("gameContainer");
+const playerEl = document.getElementById("player");
+const scoreEl = document.getElementById("score");
+const livesEl = document.getElementById("lives");
+
+let keys = {};
+let bullets = [];
+let enemies = [];
+let fireballs = [];
+let score = 0;
+let lives = 3;
+let gameRunning = false;
+let shootInterval = null; // Para la ráfaga continua
+
+const player = { x: 80, y: 200, w: 50, h: 50, speed: 6 };
+
+// --- CONTROLES ---
+document.addEventListener("keydown", e => {
+  keys[e.key] = true;
+  if (e.key === " " && !shootInterval) {
+    startShooting();
+  }
+});
+
+document.addEventListener("keyup", e => {
+  keys[e.key] = false;
+  if (e.key === " ") {
+    stopShooting();
+  }
+});
+
+// --- LÓGICA DE DISPARO (LA RECTA) ---
+function startShooting() {
+  // Crea una bala cada 60ms mientras mantengas pulsado
+  shootInterval = setInterval(() => {
+    if(!gameRunning) return;
+    const b = {
+      x: player.x + 40,
+      y: player.y + 23,
+      w: 15, h: 4, speed: 5,
+      el: document.createElement("div")
+    };
+    b.el.className = "entity bullet";
+    container.appendChild(b.el);
+    bullets.push(b);
+  }, 20); 
+}
+
+function stopShooting() {
+  clearInterval(shootInterval);
+  shootInterval = null;
+}
+
+// --- ENEMIGOS Y PELIGROS ---
+function spawnEnemy() {
+  const e = {
+    x: 900,
+    y: Math.random() * 440,
+    w: 50, h: 50,
+    speed: 1 + Math.random() * 3,
+    fireCooldown: 400,
+    el: document.createElement("div")
+  };
+  e.el.className = "entity enemy";
+  e.el.innerHTML = "😼";
+  container.appendChild(e.el);
+  enemies.push(e);
+}
+
+function shootFireball(enemy) {
+  const f = {
+    x: enemy.x,
+    y: enemy.y + 20,
+    w: 16, h: 16, speed: 6,
+    el: document.createElement("div")
+  };
+  f.el.className = "entity fireball";
+  container.appendChild(f.el);
+  fireballs.push(f);
+}
+
+function isColliding(a, b) {
+  return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
+}
+
+// --- BUCLE PRINCIPAL ---
+function update() {
+  if (!gameRunning) return;
+
+  // Mover jugador
+  if (keys["ArrowUp"]) player.y -= player.speed;
+  if (keys["ArrowDown"]) player.y += player.speed;
+  if (keys["ArrowLeft"]) player.x -= player.speed;
+  if (keys["ArrowRight"]) player.x += player.speed;
+
+  player.x = Math.max(0, Math.min(850, player.x));
+  player.y = Math.max(0, Math.min(450, player.y));
+  playerEl.style.transform = `translate(${player.x}px, ${player.y}px)`;
+
+  // Mover Balas
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    let b = bullets[i];
+    b.x += b.speed;
+    b.el.style.transform = `translate(${b.x}px, ${b.y}px)`;
+    if (b.x > 900) {
+      b.el.remove();
+      bullets.splice(i, 1);
+    }
+  }
+
+  // Mover Enemigos
+  for (let i = enemies.length - 1; i >= 0; i--) {
+    let e = enemies[i];
+    e.x -= e.speed;
+    e.el.style.transform = `translate(${e.x}px, ${e.y}px)`;
+    
+    e.fireCooldown--;
+    if (e.fireCooldown <= 0) {
+      shootFireball(e);
+      e.fireCooldown = 100;
+    }
+
+    if (e.x < -60) {
+      e.el.remove();
+      enemies.splice(i, 1);
+    }
+  }
+
+  // Mover Bolas de Fuego y Colisión con Jugador
+  for (let i = fireballs.length - 1; i >= 0; i--) {
+    let f = fireballs[i];
+    f.x -= f.speed;
+    f.el.style.transform = `translate(${f.x}px, ${f.y}px)`;
+
+    if (isColliding(f, player)) {
+      f.el.remove();
+      fireballs.splice(i, 1);
+      lives--;
+      livesEl.textContent = lives;
+      if (lives <= 0) gameOver();
+    } else if (f.x < -20) {
+      f.el.remove();
+      fireballs.splice(i, i);
+    }
+  }
+
+  // Colisión Bala vs Enemigo
+  bullets.forEach((b, bi) => {
+    enemies.forEach((e, ei) => {
+      if (isColliding(b, e)) {
+        score += 100;
+        scoreEl.textContent = score;
+        b.el.style.display = 'none'; // Desaparecer rápido
+        e.el.style.display = 'none';
+        // Los eliminamos del array en el siguiente frame o con un pequeño truco
+        b.x = 2000; 
+        e.x = -2000;
+      }
+    });
+  });
+
+  if (Math.random() < 0.2) spawnEnemy();
+
+  requestAnimationFrame(update);
+}
+
+function startGame() {
+  document.getElementById("startScreen").style.display = "none";
+  gameRunning = true;
+  update();
+}
+
+function gameOver() {
+  gameRunning = false;
+  stopShooting();
+  alert("¡Game Over! Puntos: " + score);
+  location.reload();
+}
+</script>
+</body>
+</html>

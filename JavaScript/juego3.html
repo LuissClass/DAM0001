@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Asteroid Lander: Survival Edition</title>
+    <style>
+        body {
+            margin: 0;
+            background: #050505;
+            background-image: url(space.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        canvas {
+            border: 2px solid #333;
+            background: radial-gradient(circle, #111 0%, #000 100%);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+        }
+        .ui-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border: 1px solid #00ff00;
+            pointer-events: auto;
+        }
+        .controls-info {
+            position: absolute;
+            bottom: 20px;
+            color: #555;
+        }
+        label { cursor: pointer; color: #ff00ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="ui-panel">
+    VELOCIDAD H: <span id="vx">0</span><br>
+    VELOCIDAD V: <span id="vy">0</span><br>
+    COMBUSTIBLE: <span id="fuel">100</span>%<br>
+    <hr>
+    <label>
+        <input type="checkbox" id="enemyToggle" checked> ¿ENEMIGOS ACTIVOS?
+    </label>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
+<div class="controls-info">FLECHAS PARA MOVER | ATERRIZA SUAVE EN LA PLATAFORMA</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const enemyCheckbox = document.getElementById('enemyToggle');
+    
+    canvas.width = 800;
+    canvas.height = 600;
+
+    // --- Estado del Juego ---
+    const ship = {
+        x: 100, y: 100, vx: 0, vy: 0, angle: 0,
+        thrust: 0.15, rotationSpeed: 0.08,
+        fuel: 1000, size: 15, alive: true, landed: false
+    };
+
+    const target = { x: 450, y: 300, width: 80, height: 15, color: '#ff00ff' };
+    
+    let enemies = [];
+    const asteroids = Array.from({length: 50}, () => ({
+        x: Math.random() * 700 + 150,
+        y: Math.random() * 700 + 50,
+        r: Math.random() * 25 + 15
+    }));
+
+    const keys = {};
+    window.onkeydown = (e) => keys[e.code] = true;
+    window.onkeyup = (e) => keys[e.code] = false;
+
+    function spawnEnemy() {
+        if (!enemyCheckbox.checked || !ship.alive || ship.landed) return;
+        enemies.push({
+            x: canvas.width,
+            y: Math.random() * canvas.height,
+            speed: 1.2,
+            size: 8
+        });
+    }
+
+    setInterval(spawnEnemy, 1000); // Aparece un enemigo cada 3 segundos
+
+    function update() {
+        if (!ship.alive || ship.landed) return;
+
+        // Inercia y Controles
+        if (keys['ArrowLeft']) ship.angle -= ship.rotationSpeed;
+        if (keys['ArrowRight']) ship.angle += ship.rotationSpeed;
+        if (keys['ArrowUp'] && ship.fuel > 0) {
+            ship.vx += Math.cos(ship.angle) * ship.thrust;
+            ship.vy += Math.sin(ship.angle) * ship.thrust;
+            ship.fuel -= 1.5;
+        }
+        
+        ship.vy += 0.02; // Gravedad
+        ship.x += ship.vx;
+        ship.y += ship.vy;
+
+        // Colisión Bordes
+        if (ship.x < 0 || ship.x > canvas.width || ship.y < 0 || ship.y > canvas.height) ship.alive = false;
+
+        // Colisión Asteroides
+        asteroids.forEach(a => {
+            const dist = Math.hypot(ship.x - a.x, ship.y - a.y);
+            if (dist < a.r + 5) ship.alive = false;
+        });
+
+        // Lógica de Enemigos
+        if (enemyCheckbox.checked) {
+            enemies.forEach((en, i) => {
+                const dx = ship.x - en.x;
+                const dy = ship.y - en.y;
+                const angle = Math.atan2(dy, dx);
+                en.x += Math.cos(angle) * en.speed;
+                en.y += Math.sin(angle) * en.speed;
+
+                // Colisión enemigo con nave
+                if (Math.hypot(ship.x - en.x, ship.y - en.y) < 15) ship.alive = false;
+            });
+        } else {
+            enemies = []; // Limpiar si se desmarcan
+        }
+
+        // Aterrizaje
+        if (ship.x > target.x && ship.x < target.x + target.width &&
+            ship.y + 10 > target.y && ship.y < target.y + target.height) {
+            if (Math.abs(ship.vx) < 1.2 && Math.abs(ship.vy) < 1.2) {
+                ship.landed = true;
+            } else {
+                ship.alive = false;
+            }
+        }
+
+        // UI
+        document.getElementById('vx').innerText = ship.vx.toFixed(1);
+        document.getElementById('vy').innerText = ship.vy.toFixed(1);
+        document.getElementById('fuel').innerText = Math.max(0, Math.floor(ship.fuel/10));
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Dibujar Asteroides
+        ctx.fillStyle = '#333';
+        asteroids.forEach(a => {
+            ctx.beginPath();
+            ctx.arc(a.x, a.y, a.r, 0, Math.PI*2);
+            ctx.fill();
+        });
+
+        // Plataforma
+        ctx.shadowBlur = 10; ctx.shadowColor = target.color;
+        ctx.fillStyle = target.color;
+        ctx.fillRect(target.x, target.y, target.width, target.height);
+        ctx.shadowBlur = 0;
+
+        // Enemigos (Triángulos rojos)
+        ctx.fillStyle = '#ff0000';
+        enemies.forEach(en => {
+            ctx.beginPath();
+            ctx.arc(en.x, en.y, en.size, 0, Math.PI*2);
+            ctx.fill();
+        });
+
+        // Nave
+        ctx.save();
+        ctx.translate(ship.x, ship.y);
+        ctx.rotate(ship.angle);
+        ctx.strokeStyle = ship.alive ? (ship.landed ? '#0f0' : '#fff') : '#f00';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(12, 0); ctx.lineTo(-8, 8); ctx.lineTo(-8, -8); ctx.closePath();
+        ctx.stroke();
+        if (keys['ArrowUp'] && ship.fuel > 0 && ship.alive) {
+            ctx.strokeStyle = 'orange';
+            ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(-18, 0); ctx.stroke();
+        }
+        ctx.restore();
+
+        if (!ship.alive) {
+            ctx.fillStyle = "red"; ctx.textAlign = "center";
+            ctx.font = "30px Courier"; ctx.fillText("MISIÓN FALLIDA", 400, 300);
+        }
+        if (ship.landed) {
+            ctx.fillStyle = "#0f0"; ctx.textAlign = "center";
+            ctx.font = "30px Courier"; ctx.fillText("ATERRIZAJE PERFECTO", 400, 300);
+        }
+    }
+
+    function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+    }
+    
+    loop();
+</script>
+</body>
+</html>

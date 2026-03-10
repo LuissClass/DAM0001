@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <table>
+        <tbody id="tablaBody">
+            <tr>
+                <td>Celda 0.0</td>
+                <td>Celda 0.1</td>
+            </tr>
+            <tr>
+                <td>Celda 1.0</td>
+                <td>Celda 1.1</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+<script>
+    const boton = document.createElement("button");
+    boton.textContent = "Botón para crear una fila";
+    document.body.appendChild(boton);
+    boton.onclick = crearFila; 
+    boton.style.position = "absolute";
+    boton.style.right = "20px"; 
+    boton.style.top = "20px";
+    let cont = 0;
+
+    function crearFila() {    
+        const tabla = document.getElementById("tablaBody");
+        const nuevaFila = document.createElement("tr");
+        const col1 = document.createElement("td");
+        col1.textContent = "CeldaN1";
+        const col2 = document.createElement("td");
+        col2.textContent = "CeldaN2";
+
+        nuevaFila.appendChild(col1);
+        nuevaFila.appendChild(col2);
+        tabla.appendChild(nuevaFila);
+        
+        cont++;
+
+        if (cont > 5) {
+            boton.onclick = ""; 
+        }
+    }
+</script>
+
+</html>

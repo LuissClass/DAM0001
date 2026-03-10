@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Bienvenido a SkyPaws Market</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, sans-serif;
+      background: radial-gradient(circle at top, #1b2340 0, #050816 45%, #02010a 100%);
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #ffb347, #ffdd99);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    p {
+      max-width: 500px;
+      color: #a0a4c0;
+      font-size: 1rem;
+      margin-bottom: 30px;
+    }
+
+    .dog-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0); }
+    }
+
+    .btn {
+      padding: 12px 26px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ffb347, #ff7b7b);
+      color: #1b1020;
+      box-shadow: 0 12px 28px rgba(255, 179, 71, 0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 34px rgba(255, 179, 71, 0.7);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 18px rgba(255, 179, 71, 0.4);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 15px;
+      font-size: 0.75rem;
+      color: #a0a4c0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dog-icon">🐶🪽</div>
+
+  <h1>Bienvenido a SkyPaws Market</h1>
+
+  <p>
+    El portal oficial de los <strong>perros voladores</strong>.  
+    Entra y descubre razas únicas, entrenadas para surcar los cielos contigo.
+  </p>
+
+  <button class="btn" onclick="goToStore()">
+    Entrar a la tienda ✨
+  </button>
+
+  <footer>© SkyPaws Market — Donde los sueños tienen alas.</footer>
+
+  <script>
+    function goToStore() {
+      window.location.href = "j2.html";
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+
+hola = "Que carajo!"
+
+function myFunction() {
+  document.getElementById("demo").innerHTML = hola;
+    //alert('Has pulsado el botón!');
+}
+
+function loop1() {
+    const cars = ["BMW", "Volvo", "Saab", "Ford", "Fiat", "Audi"];
+
+    let text = "";
+    for (let i = 0; i < cars.length; i++) {
+        text += cars[i] + "<br>";
+    }
+
+    document.getElementById("l1").innerHTML = text;
+}
+
+function loop2() {
+    let cont = 0
+    while (cont < 100) {
+        cont++;
+        document.getElementById("l1").innerHTML = cont;
+    }
+}
+
+function promt1() {
+    document.getElementById("p1").innerHTML = "Escribe tu nombre: ";
+    let pr1 = prompt("Name: ", "Av. Juan Pedro")
+    confirm("Tu nombre es " + pr1)
+    document.getElementById("p1").innerHTML = pr1;
+}
+
+</script>
+</head>
+
+<body>
+<h2>Demo JavaScript in Head</h2>
+
+<p id="demoe">A Paragraph</p>
+<button type="button" onclick="myFunction(); loop1()">Try it</button>
+
+
+<h1 id="demo"> Algo
+<button type="button" onclick="myFunction(), loop2()">Try it</button>
+</h1>
+
+<p id="l1">hmm</p> <br>
+
+<p id="p1">hammm
+    <button type="button" onclick="promt1()">Try it</button>
+</p>
+
+</body>
+</html>

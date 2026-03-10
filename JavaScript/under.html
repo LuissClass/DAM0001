@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Undertale Battle Demo</title>
+<style>
+    body {
+        background: black;
+        color: white;
+        font-family: "Courier New", monospace;
+        text-align: center;
+    }
+    #game {
+        width: 600px;
+        margin: auto;
+        border: 3px solid white;
+        padding: 20px;
+        margin-top: 40px;
+    }
+    #battleBox {
+        width: 300px;
+        height: 200px;
+        margin: auto;
+        border: 2px solid white;
+        position: relative;
+        background: black;
+        overflow: hidden;
+        display: none;
+    }
+    #soul {
+        width: 15px;
+        height: 15px;
+        background: red;
+        position: absolute;
+        border-radius: 3px;
+    }
+    .bullet {
+        width: 10px;
+        height: 10px;
+        background: white;
+        position: absolute;
+        border-radius: 50%;
+    }
+    button {
+        background: black;
+        color: white;
+        border: 2px solid white;
+        padding: 10px 20px;
+        margin: 5px;
+        font-size: 18px;
+        cursor: pointer;
+    }
+    #enemyHP {
+        margin: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div id="game">
+    <h2>⚔ Combate estilo Undertale</h2>
+
+    <div id="enemyHP">HP Enemigo: <span id="hpValue">100</span></div>
+
+    <div id="actions">
+        <button onclick="playerAttack()">ATACAR</button>
+        <button onclick="talk()">HABLAR</button>
+        <button onclick="heal()">CURA</button>
+    </div>
+
+    <div id="battleBox">
+        <div id="soul"></div>
+    </div>
+
+    <div id="textbox">Un enemigo aparece…</div>
+</div>
+
+<script>
+let enemyHP = 100;
+let playerTurn = true;
+let soul = document.getElementById("soul");
+let battleBox = document.getElementById("battleBox");
+
+let soulX = 140, soulY = 90;
+let soulSpeed = 3;
+
+let bullets = [];
+let attackInterval;
+
+// Mostrar alma centrada
+function resetSoul() {
+    soulX = 140;
+    soulY = 90;
+    soul.style.left = soulX + "px";
+    soul.style.top = soulY + "px";
+}
+
+// Movimiento del alma
+document.addEventListener("keydown", (e) => {
+    if (!battleBox.style.display === "block") return;
+    if (e.key === "ArrowUp" || e.key === "w") soulY -= soulSpeed;
+    if (e.key === "ArrowDown" || e.key === "s") soulY += soulSpeed;
+    if (e.key === "ArrowLeft" || e.key === "a") soulX -= soulSpeed;
+    if (e.key === "ArrowRight" || e.key === "d") soulX += soulSpeed;
+
+    // Limites
+    soulX = Math.max(0, Math.min(300 - 15, soulX));
+    soulY = Math.max(0, Math.min(200 - 15, soulY));
+
+    soul.style.left = soulX + "px";
+    soul.style.top = soulY + "px";
+});
+
+// Crear proyectil
+function spawnBullet() {
+    let b = document.createElement("div");
+    b.classList.add("bullet");
+    b.style.left = Math.random() * 290 + "px";
+    b.style.top = "0px";
+    battleBox.appendChild(b);
+
+    bullets.push({
+        el: b,
+        x: parseInt(b.style.left),
+        y: 0,
+    });
+}
+
+// Movimiento de proyectiles
+function moveBullets() {
+    bullets.forEach((b, i) => {
+        b.y += 2;
+        b.el.style.top = b.y + "px";
+
+        // Colisión
+        if (Math.abs(b.x - soulX) < 10 && Math.abs(b.y - soulY) < 10) {
+            endAttack("¡Te golpearon!");
+        }
+
+        // Si salen del área
+        if (b.y > 210) {
+            b.el.remove();
+            bullets.splice(i, 1);
+        }
+    });
+}
+
+// Turno enemigo
+function enemyAttack() {
+    playerTurn = false;
+    bullets = [];
+    battleBox.style.display = "block";
+    resetSoul();
+    document.getElementById("textbox").innerText = "¡Evita los proyectiles!";
+
+    spawnBullet();
+    attackInterval = setInterval(() => {
+        if (Math.random() < 0.1) spawnBullet();
+        moveBullets();
+    }, 30);
+
+    // Duración del ataque
+    setTimeout(() => {
+        endAttack("Has sobrevivido al ataque.");
+    }, 4000);
+}
+
+// Fin del ataque
+function endAttack(msg) {
+    clearInterval(attackInterval);
+    bullets.forEach(b => b.el.remove());
+    bullets = [];
+    battleBox.style.display = "none";
+    document.getElementById("textbox").innerText = msg;
+
+    playerTurn = true;
+}
+
+// -------------------------
+// ACCIONES DEL JUGADOR
+// -------------------------
+function updateHP() {
+    document.getElementById("hpValue").innerText = enemyHP;
+}
+
+function playerAttack() {
+    if (!playerTurn) return;
+
+    const dmg = Math.floor(Math.random() * 20) + 5;
+    enemyHP -= dmg;
+    if (enemyHP < 0) enemyHP = 0;
+
+    updateHP();
+    document.getElementById("textbox").innerText = "Haces " + dmg + " de daño.";
+
+    if (enemyHP <= 0) {
+        document.getElementById("textbox").innerText = "¡Has ganado!";
+        return;
+    }
+
+    setTimeout(enemyAttack, 1000);
+}
+
+function talk() {
+    if (!playerTurn) return;
+    document.getElementById("textbox").innerText = "Intentas hablar con el enemigo… no entiende.";
+    setTimeout(enemyAttack, 1000);
+}
+
+function heal() {
+    if (!playerTurn) return;
+    document.getElementById("textbox").innerText = "Te curas, aunque no hace falta…";
+    setTimeout(enemyAttack, 1000);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <table>
+        <tbody id="tablaBody">
+            <tr>
+                <td>Continente</td>
+                <td colspan="5">Países (haz click para comprobar)</td>
+            </tr>
+            <tr>
+                <td>Europa</td>
+            </tr>
+            <tr>
+                <td>América</td>
+            </tr>
+            <tr>
+                <td>Asia</td>
+            </tr>
+            <tr>
+                <td>África</td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <p id="p_aciertos">Aciertos: </p>
+        <p id="p_fallos">Fallos: </p>
+    </div>
+</body>
+
+<script>
+    const paises = {
+        // Europa
+        "España": "Europa",
+        "Francia": "Europa",
+        "Italia": "Europa",
+        "Alemania": "Europa",
+        "Reino Unido": "Europa",
+        "Portugal": "Europa",
+        "Grecia": "Europa",
+
+        // Asia
+        "Japón": "Asia",
+        "China": "Asia",
+        "Corea del Sur": "Asia",
+        "India": "Asia",
+        "Tailandia": "Asia",
+        "Vietnam": "Asia",
+        "Indonesia": "Asia",
+
+        // África
+        "Egipto": "Africa",
+        "Nigeria": "Africa",
+        "Sudáfrica": "Africa",
+        "Marruecos": "Africa",
+        "Kenia": "Africa",
+        "Senegal": "Africa",
+        "Etiopía": "Africa",
+
+        // America
+        "Chile": "America",
+        "Mexico": "America",
+        "Argentina": "America",
+        "Canada": "America",
+        "Colombia": "America",
+        "Brasil": "America",
+        "EEUU": "America"
+    };
+
+    //boton.onclick = crearFila;
+    let esPrimeraRow = false;
+
+    const tabla = document.getElementById("tablaBody");
+
+    // Sacamos keys y values por separado
+    const nombresDePaises = Object.keys(paises);
+    const nombresConts = Object.values(paises);
+
+    // Donde se guardaran los indices
+    const indicesElegidos = [-1]
+
+    let paisNuevo = false
+
+    let ptAciertos = 0
+    let ptFallos = 0
+
+    const paisesElegidos = []
+    const contsElegidos = []
+
+
+    document.querySelectorAll("tr").forEach((tr, fila) => {
+        for (let i = 0; i < 5 && esPrimeraRow; i++) {
+            switch (fila) {
+                case 1:
+                    contsElegidos.push("Europa");
+                    break;
+                case 2:
+                    contsElegidos.push("America");
+                    break;
+                case 3:
+                    contsElegidos.push("Asia");
+                    break;
+                case 4:
+                    contsElegidos.push("Africa");
+                    break;
+            }
+
+
+            paisNuevo = false;
+
+            // Generamos nueva columna y nuevo boton
+            const newCol = document.createElement("td");
+            const newBoton = document.createElement("button");
+            let indiceAleatorio = -1
+
+            do {
+                // Generamos un índice aleatorio basado en el largo del array
+                indiceAleatorio = Math.floor(Math.random() * nombresDePaises.length);
+
+                if (!indicesElegidos.includes(indiceAleatorio)) {
+                    paisNuevo = true;
+                    indicesElegidos.push(indiceAleatorio);
+                }
+            } while (!paisNuevo);
+
+            // Obtenemos el nombre del país y lo asignamos
+            const paisElegido = nombresDePaises[indiceAleatorio];
+            newBoton.textContent = paisElegido;
+            // Lo guardamos
+            paisesElegidos.push(paisElegido);
+
+            // Añadimos al html el boton y la columna
+            newCol.appendChild(newBoton);
+            tr.appendChild(newCol);
+        }
+        esPrimeraRow = true;
+    });
+
+    document.querySelectorAll("button").forEach((boton, i) => {
+        let esCorrecto = null
+        boton.addEventListener("click", () => {
+
+            if (boton.style.backgroundColor == "yellow") {
+                esCorrecto = comprobarContinente(i, boton.textContent)
+            }
+
+
+            if (esCorrecto) {
+                boton.style.backgroundColor = "lightblue";
+            } else {
+                boton.style.backgroundColor = "red";
+            }
+        });
+
+        boton.style.backgroundColor = "yellow";
+    });
+
+    function comprobarContinente(indexContinente, namePais) {
+        if (contsElegidos[indexContinente] == paises[namePais]) {
+            ptAciertos++
+            document.getElementById("p_aciertos").innerText = "Aciertos: " + ptAciertos
+            return true
+        } else {
+            ptFallos++
+            document.getElementById("p_fallos").innerText = "Fallos: " + ptFallos
+            return false
+        }
+    }
+</script>
+
+</html>

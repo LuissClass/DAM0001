@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Asteroid Lander - Inercia Espacial</title>
+    <style>
+        body {
+            margin: 0;
+            background: #050505;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+        canvas {
+            border: 2px solid #333;
+            background: radial-gradient(circle, #111 0%, #000 100%);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+        }
+        .stats {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="stats">
+    VELOCIDAD H: <span id="vx">0</span><br>
+    VELOCIDAD V: <span id="vy">0</span><br>
+    COMBUSTIBLE: <span id="fuel">100</span>%
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 800;
+    canvas.height = 600;
+
+    // --- Configuración ---
+    const ship = {
+        x: 100,
+        y: 100,
+        vx: 0,
+        vy: 0,
+        angle: 0,
+        thrust: 0.15,
+        rotationSpeed: 0.07,
+        fuel: 1000,
+        size: 15,
+        alive: true,
+        landed: false
+    };
+
+    const target = {
+        x: 650,
+        y: 450,
+        width: 80,
+        height: 20,
+        color: '#ff00ff'
+    };
+
+    // Generar asteroides decorativos/obstáculos
+    const asteroids = Array.from({length: 8}, () => ({
+        x: Math.random() * 600 + 100,
+        y: Math.random() * 400 + 100,
+        r: Math.random() * 30 + 20
+    }));
+
+    const keys = {};
+    window.onkeydown = (e) => keys[e.code] = true;
+    window.onkeyup = (e) => keys[e.code] = false;
+
+    function update() {
+        if (!ship.alive || ship.landed) return;
+
+        // Rotación
+        if (keys['ArrowLeft']) ship.angle -= ship.rotationSpeed;
+        if (keys['ArrowRight']) ship.angle += ship.rotationSpeed;
+
+        // Propulsión (Flecha Arriba)
+        if (keys['ArrowUp'] && ship.fuel > 0) {
+            ship.vx += Math.cos(ship.angle) * ship.thrust;
+            ship.vy += Math.sin(ship.angle) * ship.thrust;
+            ship.fuel -= 1;
+        }
+
+        // Gravedad mínima (opcional, para dificultad)
+        ship.vy += 0.02;
+
+        // Aplicar movimiento
+        ship.x += ship.vx;
+        ship.y += ship.vy;
+
+        // Colisión con bordes
+        if (ship.x < 0 || ship.x > canvas.width || ship.y < 0 || ship.y > canvas.height) {
+            ship.alive = false;
+        }
+
+        // Colisión con Asteroides
+        asteroids.forEach(a => {
+            let dx = ship.x - a.x;
+            let dy = ship.y - a.y;
+            let distance = Math.sqrt(dx*dx + dy*dy);
+            if (distance < a.r + 5) ship.alive = false;
+        });
+
+        // Lógica de Aterrizaje
+        if (ship.x > target.x && ship.x < target.x + target.width &&
+            ship.y + 10 > target.y && ship.y < target.y + target.height) {
+            
+            // Condición de éxito: velocidad baja
+            if (Math.abs(ship.vx) < 1.5 && Math.abs(ship.vy) < 1.5) {
+                ship.landed = true;
+            } else {
+                ship.alive = false;
+            }
+        }
+
+        // Actualizar UI
+        document.getElementById('vx').innerText = ship.vx.toFixed(2);
+        document.getElementById('vy').innerText = ship.vy.toFixed(2);
+        document.getElementById('fuel').innerText = Math.max(0, Math.floor(ship.fuel/10));
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Dibujar Asteroides
+        ctx.fillStyle = '#444';
+        asteroids.forEach(a => {
+            ctx.beginPath();
+            ctx.arc(a.x, a.y, a.r, 0, Math.PI*2);
+            ctx.fill();
+        });
+
+        // Dibujar Plataforma (El Asteroide de destino)
+        ctx.fillStyle = target.color;
+        ctx.fillRect(target.x, target.y, target.width, target.height);
+        ctx.fillStyle = "white";
+        ctx.fillText("PLATAFORMA", target.x + 5, target.y - 10);
+
+        // Dibujar Nave
+        ctx.save();
+        ctx.translate(ship.x, ship.y);
+        ctx.rotate(ship.angle);
+        
+        ctx.strokeStyle = ship.alive ? (ship.landed ? '#0f0' : '#fff') : '#f00';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(15, 0);
+        ctx.lineTo(-10, 10);
+        ctx.lineTo(-5, 0);
+        ctx.lineTo(-10, -10);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Fuego del motor
+        if (keys['ArrowUp'] && ship.fuel > 0 && ship.alive) {
+            ctx.beginPath();
+            ctx.moveTo(-7, 0);
+            ctx.lineTo(-20, Math.random() * 6 - 3);
+            ctx.strokeStyle = 'orange';
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        // Mensajes finales
+        ctx.textAlign = "center";
+        if (!ship.alive) {
+            ctx.fillStyle = "red";
+            ctx.font = "40px Courier New";
+            ctx.fillText("¡NAVE DESTRUIDA!", canvas.width/2, canvas.height/2);
+            ctx.font = "20px Courier New";
+            ctx.fillText("Pulsa F5 para reintentar", canvas.width/2, canvas.height/2 + 40);
+        }
+        if (ship.landed) {
+            ctx.fillStyle = "#0f0";
+            ctx.font = "40px Courier New";
+            ctx.fillText("¡ATERRIZAJE EXITOSO!", canvas.width/2, canvas.height/2);
+        }
+    }
+
+    function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+    }
+
+    loop();
+</script>
+</body>
+</html>

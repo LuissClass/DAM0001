@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pelota Rebotando (Sin Canvas)</title>
+    <style>
+        * {
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            overflow: hidden;
+            /* Fundamental para que no aparezcan scrolls */
+        }
+
+        :root {
+            --bg-dinamico: white;
+        }
+
+        #pelota {
+            width: 50px;
+            height: 50px;
+            background-color: var(--bg-dinamico);
+            border-radius: 50%;
+            position: absolute;
+            /* Usamos transform para mejor rendimiento que top/left */
+        }
+
+        .txt {
+            font-size: 10ex;
+            opacity: 50%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .controles {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(128, 128, 128, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            color: gray;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="range"] {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="pelota"></div>
+    <div>
+        <p id="px" class="txt">Px: 0</p>
+        <p id="py" class="txt">Py: 0</p>
+    </div>
+    <div class="controles">
+        <div class="control-group">
+            <label>Velocidad X</label>
+            <input type="range" id="rangeX" min="0" max="30" value="10">
+        </div>
+        <div class="control-group">
+            <label>Velocidad Y</label>
+            <input type="range" id="rangeY" min="0" max="30" value="10">
+        </div>
+    </div>
+
+    <script>
+        const pelota = document.getElementById('pelota');
+
+        // Variables de posición y velocidad
+        let posX = Math.random() * (window.innerWidth - 50);
+        let posY = Math.random() * (window.innerHeight - 50);
+        let velX = 1;
+        let velY = 1;
+
+        function mover() {
+            // Obtener dimensiones actuales de la ventana (por si se redimensiona)
+            const radioPelota = 50;
+
+            // Actualizar posición
+            posX += velX;
+            posY += velY;
+
+            if (posX + pelota.offsetWidth >= window.innerWidth || posX <= 0) {
+                velX *= -1;
+                document.body.style.backgroundColor = "black";
+                document.documentElement.style.setProperty('--bg-dinamico', 'white');
+            };
+            if (posY + pelota.offsetHeight >= window.innerHeight || posY <= 0) {
+                velY *= -1;
+                document.body.style.backgroundColor = "white";
+                document.documentElement.style.setProperty('--bg-dinamico', 'black');
+            };
+
+
+            // Aplicar el movimiento usando transform (es más fluido que top/left)
+            pelota.style.transform = `translate(${posX}px, ${posY}px)`;
+
+            // 
+            document.getElementById("px").innerHTML = "Px: " + posX;
+            document.getElementById("py").innerHTML = "Py: " + posY;
+            requestAnimationFrame(mover);
+        }
+
+        // Iniciar ciclo    
+        mover();
+
+
+        // Referencias a los sliders
+        const rangeX = document.getElementById('rangeX');
+        const rangeY = document.getElementById('rangeY');
+
+        // Escuchar cambios en el volumen de X
+        rangeX.addEventListener('input', (e) => {
+            const nuevoValor = parseInt(e.target.value);
+            // Conservamos el signo: si era negativa, sigue siendo negativa
+            velX = velX < 0 ? -nuevoValor : nuevoValor;
+        });
+
+        // Escuchar cambios en el volumen de Y
+        rangeY.addEventListener('input', (e) => {
+            const nuevoValor = parseInt(e.target.value);
+            // Conservamos el signo
+            velY = velY < 0 ? -nuevoValor : nuevoValor;
+        });
+    </script>
+</body>
+</html>

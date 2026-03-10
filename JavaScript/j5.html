@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>j5 — Perros Voladores vs Gatos de Fuego</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    margin: 0;
+    background: #0a0a0f;
+    color: #fff;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+  }
+  #gameCanvas {
+    background: linear-gradient(to bottom, #1b2340, #050816);
+    display: block;
+    margin: 0 auto;
+  }
+  #hud {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    font-size: 1.2rem;
+    background: rgba(0,0,0,0.4);
+    padding: 10px 15px;
+    border-radius: 8px;
+  }
+  #startScreen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  #startScreen button {
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #ffb347;
+    color: #000;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+
+  
+</style>
+</head>
+<body>
+
+<div id="hud">Puntos: <span id="score">0</span> | Vidas: <span id="lives">3</span></div>
+
+<div id="startScreen">
+  <h1>🐶🪽 Perros Voladores vs Gatos de Fuego 😼🔥</h1>
+  <p>Esquiva las bolas de fuego y derriba a los gatos.</p>
+  <p>Controles: Flechas para moverte · Espacio para disparar</p>
+  <button onclick="startGame()">Comenzar</button>
+</div>
+
+<canvas id="gameCanvas" width="900" height="500"></canvas>
+
+<script>
+// ------------------------------
+// VARIABLES DEL JUEGO
+// ------------------------------
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let keys = {};
+let bullets = [];
+let enemies = [];
+let fireballs = [];
+
+let score = 0;
+let lives = 3;
+let gameRunning = false;
+
+// Perro volador (jugador)
+const player = {
+  x: 80,
+  y: 200,
+  w: 50,
+  h: 50,
+  speed: 5
+};
+
+// ------------------------------
+// EVENTOS DE TECLADO
+// ------------------------------
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+// ------------------------------
+// DISPARAR
+// ------------------------------
+function shoot() {
+  bullets.push({
+    x: player.x + player.w,
+    y: player.y + player.h / 2 - 4,
+    w: 12,
+    h: 6,
+    speed: 8
+  });
+}
+
+// ------------------------------
+// CREAR GATOS ENEMIGOS
+// ------------------------------
+function spawnEnemy() {
+  enemies.push({
+    x: canvas.width + 50,
+    y: Math.random() * (canvas.height - 60),
+    w: 50,
+    h: 50,
+    speed: 3 + Math.random() * 2,
+    fireCooldown: 0
+  });
+}
+
+// ------------------------------
+// CREAR BOLAS DE FUEGO
+// ------------------------------
+function shootFireball(enemy) {
+  fireballs.push({
+    x: enemy.x,
+    y: enemy.y + enemy.h / 2,
+    w: 12,
+    h: 12,
+    speed: 6
+  });
+}
+
+// ------------------------------
+// COLISIONES
+// ------------------------------
+function isColliding(a, b) {
+  return (
+    a.x < b.x + b.w &&
+    a.x + a.w > b.x &&
+    a.y < b.y + b.h &&
+    a.y + a.h > b.y
+  );
+}
+
+// ------------------------------
+// BUCLE PRINCIPAL
+// ------------------------------
+function gameLoop() {
+  if (!gameRunning) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Movimiento del jugador
+  if (keys["ArrowUp"]) player.y -= player.speed;
+  if (keys["ArrowDown"]) player.y += player.speed;
+  if (keys["ArrowLeft"]) player.x -= player.speed;
+  if (keys["ArrowRight"]) player.x += player.speed;
+  if (keys[" "]) shoot();
+
+  // Limitar al jugador dentro del canvas
+  player.y = Math.max(0, Math.min(canvas.height - player.h, player.y));
+  player.x = Math.max(0, Math.min(canvas.width - player.w, player.x));
+
+  // Dibujar jugador
+  ctx.fillStyle = "#ffdd99";
+  ctx.fillRect(player.x, player.y, player.w, player.h);
+  ctx.fillStyle = "#fff";
+  ctx.fillText("🐶", player.x + 10, player.y + 35);
+
+  // Actualizar balas
+  bullets.forEach((b, i) => {
+    b.x += b.speed;
+    ctx.fillStyle = "white";
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+
+    if (b.x > canvas.width) bullets.splice(i, 1);
+  });
+
+  // Enemigos
+  enemies.forEach((e, i) => {
+    e.x -= e.speed;
+
+    // Dibujar gato
+    ctx.fillStyle = "#ff6666";
+    ctx.fillRect(e.x, e.y, e.w, e.h);
+    ctx.fillStyle = "#fff";
+    ctx.fillText("😼", e.x + 10, e.y + 35);
+
+    // Disparar fuego
+    e.fireCooldown--;
+    if (e.fireCooldown <= 0) {
+      shootFireball(e);
+      e.fireCooldown = 60 + Math.random() * 60;
+    }
+
+    // Si sale de pantalla
+    if (e.x + e.w < 0) enemies.splice(i, 1);
+  });
+
+  // Bolas de fuego
+  fireballs.forEach((f, i) => {
+    f.x -= f.speed;
+    ctx.fillStyle = "#ff3300";
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.w, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Colisión con jugador
+    if (isColliding(f, player)) {
+      fireballs.splice(i, 1);
+      lives--;
+      document.getElementById("lives").textContent = lives;
+      if (lives <= 0) return gameOver();
+    }
+
+    if (f.x < -20) fireballs.splice(i, 1);
+  });
+
+  // Colisiones bala vs enemigo
+  bullets.forEach((b, bi) => {
+    enemies.forEach((e, ei) => {
+      if (isColliding(b, e)) {
+        bullets.splice(bi, 1);
+        enemies.splice(ei, 1);
+        score += 100;
+        document.getElementById("score").textContent = score;
+      }
+    });
+  });
+
+  // Crear enemigos aleatoriamente
+  if (Math.random() < 0.02) spawnEnemy();
+
+  requestAnimationFrame(gameLoop);
+}
+
+// ------------------------------
+// INICIAR JUEGO
+// ------------------------------
+function startGame() {
+  document.getElementById("startScreen").style.display = "none";
+  gameRunning = true;
+  score = 0;
+  lives = 3;
+  enemies = [];
+  bullets = [];
+  fireballs = [];
+  document.getElementById("score").textContent = score;
+  document.getElementById("lives").textContent = lives;
+  gameLoop();
+}
+
+// ------------------------------
+// GAME OVER
+// ------------------------------
+function gameOver() {
+  gameRunning = false;
+  alert("¡Game Over! Puntuación final: " + score);
+  location.reload();
+}
+</script>
+
+</body>
+</html>

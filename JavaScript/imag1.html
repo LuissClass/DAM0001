@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .s_img{
+            width: 10ex;    
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="https://upload.wikimedia.org/wikipedia/en/d/d2/Dio_Brando.jpg" alt="Dio_Brando">
+    <img src="https://i.redd.it/day-8-of-colouring-a-manga-panel-for-every-main-jojo-v0-p3om6h0kp9b81.jpg?width=738&format=pjpg&auto=webp&s=86229de329247755b80e4d4f7c12241d647c39a6" alt="Kira Y.">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSrRofahn2S8TK1dDbdNuI_j8xcxKf_iRyig&s" alt="Kira y su esposa">
+</body>
+<script>
+    for (let i = 0; i < document.images.length; i++) {
+        // Crear el texto debajo de las imagenes
+        const img = document.images[i];
+        const data_container = document.createElement("div");
+        const url_label = document.createElement("p");
+        const width_label = document.createElement("p");
+        const height_label = document.createElement("p");
+        
+        img.after(data_container);
+        url_label.innerHTML = "Url: " + (img.src);
+        width_label.innerHTML = "Ancho: " + (img.width) + " px";
+        height_label.innerHTML = "Alto: " + (img.height) + " px";
+
+        data_container.appendChild(url_label);
+        data_container.appendChild(width_label);
+        data_container.appendChild(height_label);
+
+        // Modificar el tamano de las imagenes
+        img.classList.add('s_img');
+    }
+
+    
+
+</script>
+</html>
